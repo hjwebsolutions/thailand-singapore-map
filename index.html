@@ -210,24 +210,28 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
   .topbtn{font-size:10px;padding:5px 9px;order:1}
   .route-bar{touch-action:pan-x;height:36px;flex-shrink:0}
 
-  /* Layout: column, fills remaining viewport height */
-  .layout{flex-direction:column;flex:1;min-height:0;overflow:visible}
+  /* Layout: positioning context for map + side panel */
+  .layout{flex:1;min-height:0;position:relative;overflow:hidden}
 
-  /* Map: fixed height at top of layout, shadow separates it from panel */
+  /* Map pinned to top of layout */
   #map{
-    height:45vh;min-height:240px;flex:none;width:100%;
+    position:absolute;top:0;left:0;right:0;
+    height:45vh;min-height:240px;
     box-shadow:0 4px 20px rgba(0,0,0,0.55);
   }
 
-  /* Side panel: scrollable area below the map */
+  /* Side panel: absolutely positioned below map with hard bottom bound — iOS-safe scroll container */
   .side{
-    flex:1;width:100%;min-height:0;
+    position:absolute;top:45vh;left:0;right:0;bottom:0;
     border-left:none;border-top:none;
-    overflow-y:auto;overflow-x:hidden;
+    overflow-y:scroll;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
   }
 
-  /* Attraction list flows naturally inside the scrollable side panel */
+  /* sideMain must not clip its content (overrides inline style) */
+  #sideMain{overflow:visible!important;flex:none!important;height:auto!important}
+
+  /* Attraction list flows naturally so .side does the scrolling */
   .attr-scroll{overflow:visible;max-height:none;flex:none}
   /* Bottom breathing room so last card isn't clipped */
   .attr-scroll::after{content:'';display:block;height:56px}
