@@ -150,6 +150,18 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
 .iw-arrow:hover{background:rgba(0,0,0,0.85)}
 .iw-prev{left:8px}
 .iw-next{right:8px}
+.iw-close{
+  position:absolute;top:8px;right:8px;
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,0.2);
+  color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;line-height:1;z-index:20;user-select:none;
+}
+/* expanded tap target without growing the visual button */
+.iw-close::before{content:'';position:absolute;inset:-10px}
+.iw-close:hover{background:rgba(0,0,0,0.9)}
 .iw-counter{
   position:absolute;bottom:8px;right:10px;
   background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);
@@ -182,26 +194,46 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
 
 /* ── MOBILE (≤768px) ── */
 @media (max-width:768px){
-  html,body{height:auto;overflow-y:auto;overflow-x:hidden}
+  /* Body is a flex column so .layout fills remaining height */
+  html,body{height:100%;overflow:hidden}
+  body{display:flex;flex-direction:column}
+
+  /* Topbar stays sticky at top */
   .topbar{
     height:auto;min-height:48px;flex-wrap:wrap;
     padding:8px 12px;gap:6px;
-    position:sticky;top:0;z-index:300;
+    position:sticky;top:0;z-index:300;flex-shrink:0;
   }
   .trip-brand{order:0;flex:1 1 auto}
   .pills{order:2;flex:0 0 100%;width:100%;padding:0;margin-top:2px;-webkit-overflow-scrolling:touch}
   .pill{padding:4px 10px;font-size:10px}
   .topbtn{font-size:10px;padding:5px 9px;order:1}
-  .route-bar{touch-action:pan-x;height:36px}
-  .layout{flex-direction:column;height:auto}
-  #map{height:50vh;min-height:280px;flex:none;width:100%}
-  .side{
-    width:100%;border-left:none;
-    border-top:1px solid rgba(255,255,255,0.07);
-    overflow:visible;max-height:none;
+  .route-bar{touch-action:pan-x;height:36px;flex-shrink:0}
+
+  /* Layout: column, fills remaining viewport height */
+  .layout{flex-direction:column;flex:1;height:0;min-height:0;overflow:hidden}
+
+  /* Map: fixed height at top of layout, shadow separates it from panel */
+  #map{
+    height:45vh;min-height:240px;flex:none;width:100%;
+    box-shadow:0 4px 20px rgba(0,0,0,0.55);
   }
+
+  /* Side panel: scrollable area below the map */
+  .side{
+    flex:1;width:100%;min-height:0;
+    border-left:none;border-top:none;
+    overflow-y:auto;overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* Attraction list flows naturally inside the scrollable side panel */
   .attr-scroll{overflow:visible;max-height:none;flex:none}
+  /* Bottom breathing room so last card isn't clipped */
+  .attr-scroll::after{content:'';display:block;height:56px}
   .sec-title{position:static}
+
+  /* Tap targets & typography */
   .acard{min-height:56px;padding:12px 14px 12px 12px}
   .ac-name{font-size:12.5px}
   .ac-type,.ac-day,.ac-stars{font-size:10px}
@@ -211,6 +243,8 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
   .sh-city{font-size:16px}
   .side-transport{font-size:11px}
   .sp-text{font-size:13px}
+
+  /* Info window scaled for narrower screens */
   .iw{width:240px}
   .iw-carousel{width:240px;height:145px}
   .iw-track{height:145px}
@@ -538,6 +572,12 @@ function initMap() {
   // Store pendingIWId before each setContent call via buildIWFull
   window._setPendingIWId = (id) => { pendingIWId = id; };
 
+  // Close IW when clicking bare map
+  google.maps.event.addListener(map, 'click', () => infoWindow.close());
+
+  // Global close function for inline onclick in IW HTML
+  window.closeIW = () => infoWindow.close();
+
   buildUI();
   drawRoutePaths();
   drawStops();
@@ -711,6 +751,7 @@ function buildIWFull(attr, stop, marker, urls) {
     <div class="iw-carousel">
       <div class="iw-track" id="trk_${id}">${slides}</div>
       ${arrows}${counter}${dotsHtml}
+      <button class="iw-close" onclick="window.closeIW()" aria-label="Close">&#10005;</button>
     </div>
     <div class="iw-body">
       <div class="iw-name">${attr.name}</div>
@@ -893,14 +934,6 @@ function renderSide(stop){
           </div>
         </div>`).join('')}
     </div>`;
-
-  // Mobile: allow full-page scroll for side panel
-  if (window.innerWidth <= 768) {
-    sm.style.overflow = 'visible';
-    sm.style.flex = 'none';
-    const as = sm.querySelector('.attr-scroll');
-    if (as) { as.style.overflow = 'visible'; as.style.flex = 'none'; }
-  }
 
   stop.attrs.forEach((a,i)=>{
     const img=document.getElementById('th'+i);
