@@ -42,7 +42,7 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
 .route-bar{
   display:flex;align-items:center;height:34px;padding:0 16px;
   background:rgba(10,9,7,0.95);border-bottom:1px solid rgba(255,255,255,0.06);
-  overflow-x:auto;gap:0;flex-shrink:0;
+  overflow-x:auto;gap:0;flex-shrink:0;-webkit-overflow-scrolling:touch;
 }
 .route-bar::-webkit-scrollbar{display:none}
 .rb-stop{display:flex;align-items:center;gap:4px;cursor:pointer;padding:0 2px}
@@ -105,6 +105,7 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
   border-bottom:1px solid rgba(255,255,255,0.05);
   cursor:pointer;transition:background 0.1s;
   border-left:3px solid transparent;align-items:flex-start;
+  min-height:48px;
 }
 .acard:hover{background:rgba(255,255,255,0.03)}
 .acard.active{background:rgba(123,104,200,0.12);border-left-color:#7B68C8}
@@ -115,6 +116,9 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
 }
 .ac-thumb-wrap{width:64px;height:52px;border-radius:7px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,0.05);position:relative}
 .ac-thumb{width:100%;height:100%;object-fit:cover;display:block}
+.ac-fb{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:3px}
+.ac-fb-emoji{font-size:18px;line-height:1}
+.ac-fb-name{font-size:6.5px;color:rgba(255,255,255,0.55);text-align:center;line-height:1.3;word-break:break-word}
 .ac-info{flex:1;min-width:0}
 .ac-name{font-size:11.5px;font-weight:600;color:#e8e5de;line-height:1.25;letter-spacing:0.01em}
 .ac-type{font-size:9.5px;color:#5a5855;margin-top:1px}
@@ -128,13 +132,11 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
 
 /* ── INFO WINDOW ── */
 .iw{font-family:'DM Sans',sans-serif;width:280px;border-radius:12px;overflow:hidden;background:#1a1916}
-.iw-carousel{position:relative;width:280px;height:165px;overflow:hidden;background:#111}
+.iw-carousel{position:relative;width:280px;height:165px;overflow:hidden;background:#111;touch-action:pan-y}
 .iw-track{display:flex;height:165px;transition:transform 0.35s cubic-bezier(.4,0,.2,1)}
 .iw-slide{width:280px;height:165px;flex-shrink:0;position:relative}
 .iw-img{width:100%;height:165px;object-fit:cover;display:block}
-.iw-img-placeholder{width:280px;height:165px;display:flex;align-items:center;justify-content:center;background:#1a1916;color:rgba(255,255,255,0.15);font-size:11px}
-
-/* Arrow buttons */
+.iw-img-placeholder{width:280px;height:165px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
 .iw-arrow{
   position:absolute;top:50%;transform:translateY(-50%);
   width:32px;height:32px;border-radius:50%;
@@ -143,24 +145,20 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
   color:#fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   font-size:16px;font-weight:300;line-height:1;
-  transition:background 0.15s;z-index:10;
-  user-select:none;
+  transition:background 0.15s;z-index:10;user-select:none;
 }
 .iw-arrow:hover{background:rgba(0,0,0,0.85)}
 .iw-prev{left:8px}
 .iw-next{right:8px}
-
 .iw-counter{
   position:absolute;bottom:8px;right:10px;
   background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);
   color:rgba(255,255,255,0.85);font-size:10px;font-weight:600;
-  padding:2px 7px;border-radius:99px;z-index:5;
-  font-family:'DM Sans',sans-serif;
+  padding:2px 7px;border-radius:99px;z-index:5;font-family:'DM Sans',sans-serif;
 }
 .iw-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:5}
 .iw-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer;transition:background 0.15s}
 .iw-dot.on{background:#fff}
-
 .iw-body{padding:11px 13px 13px}
 .iw-name{font-size:13.5px;font-weight:700;color:#f0ede6;margin-bottom:2px;line-height:1.25;font-family:'DM Sans',sans-serif}
 .iw-meta{font-size:10px;color:#5a5855;margin-bottom:2px}
@@ -176,12 +174,51 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
 .iw-btn:hover{opacity:0.85}
 .iw-gm{background:#185FA5;color:#fff}
 .iw-bk{background:#0F6E56;color:#fff}
-
 /* override Google Maps info window chrome */
 .gm-style .gm-style-iw-c{padding:0!important;border-radius:12px!important;background:#1a1916!important;box-shadow:0 8px 40px rgba(0,0,0,0.6)!important}
 .gm-style .gm-style-iw-d{overflow:hidden!important;padding:0!important}
 .gm-style .gm-style-iw-chr{display:none!important}
 .gm-style .gm-style-iw-t::after{background:#1a1916!important}
+
+/* ── MOBILE (≤768px) ── */
+@media (max-width:768px){
+  html,body{height:auto;overflow-y:auto;overflow-x:hidden}
+  .topbar{
+    height:auto;min-height:48px;flex-wrap:wrap;
+    padding:8px 12px;gap:6px;
+    position:sticky;top:0;z-index:300;
+  }
+  .trip-brand{order:0;flex:1 1 auto}
+  .pills{order:2;flex:0 0 100%;width:100%;padding:0;margin-top:2px;-webkit-overflow-scrolling:touch}
+  .pill{padding:4px 10px;font-size:10px}
+  .topbtn{font-size:10px;padding:5px 9px;order:1}
+  .route-bar{touch-action:pan-x;height:36px}
+  .layout{flex-direction:column;height:auto}
+  #map{height:50vh;min-height:280px;flex:none;width:100%}
+  .side{
+    width:100%;border-left:none;
+    border-top:1px solid rgba(255,255,255,0.07);
+    overflow:visible;max-height:none;
+  }
+  .attr-scroll{overflow:visible;max-height:none;flex:none}
+  .sec-title{position:static}
+  .acard{min-height:56px;padding:12px 14px 12px 12px}
+  .ac-name{font-size:12.5px}
+  .ac-type,.ac-day,.ac-stars{font-size:10px}
+  .acl{font-size:10px;padding:3px 10px}
+  .trip-title{font-size:14px}
+  .trip-sub{font-size:9px}
+  .sh-city{font-size:16px}
+  .side-transport{font-size:11px}
+  .sp-text{font-size:13px}
+  .iw{width:240px}
+  .iw-carousel{width:240px;height:145px}
+  .iw-track{height:145px}
+  .iw-slide{width:240px;height:145px}
+  .iw-img{height:145px}
+  .iw-img-placeholder{width:240px;height:145px}
+  .iw-arrow{width:26px;height:26px;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -213,8 +250,45 @@ html,body{height:100%;font-family:'DM Sans',-apple-system,sans-serif;overflow:hi
 <script>
 const API_KEY = 'AIzaSyAj1-GxhDl6UTKmTjDWoa3R4RDChhaW38A';
 
+// ── EMOJI HELPER ──
+function getAttrEmoji(name) {
+  const n = name.toLowerCase();
+  if (n.includes('temple') || n.includes('wat ') || n.includes('shrine') || n.includes('pagoda')) return '🛕';
+  if (n.includes('palace')) return '🏛';
+  if (n.includes('beach') || n.includes('nai ') || n.includes('karon') || n.includes('kamala') || n.includes('kata')) return '🏖';
+  if (n.includes('island') || n.includes('phi phi') || n.includes('ko ') || n.includes('phang nga')) return '🏝';
+  if (n.includes('lake') || n.includes('cheow') || n.includes('floating bungalow')) return '🚣';
+  if (n.includes('floating market') || n.includes('damnoen') || n.includes('khlong')) return '⛵';
+  if (n.includes('market') || n.includes('bazaar') || n.includes('chatuchak') || n.includes('night market') || n.includes('ratchada') || n.includes('asiatique')) return '🛍';
+  if (n.includes('elephant')) return '🐘';
+  if (n.includes('muay thai') || n.includes('stadium')) return '🥊';
+  if (n.includes('rooftop') || n.includes('sky bar') || n.includes('vertigo') || n.includes('octave') || n.includes('moon bar') || n.includes('bar') || n.includes('lounge') || n.includes('nightlife') || n.includes('bangla') || n.includes('illuzion')) return '🍸';
+  if (n.includes('spa')) return '💆';
+  if (n.includes('restaurant') || n.includes('deck') || n.includes('raya') || n.includes('one chun') || n.includes('hawker') || n.includes('maxwell') || n.includes('lau pa sat') || n.includes('newton') || n.includes('satay')) return '🍜';
+  if (n.includes('food centre') || n.includes('food center') || n.includes('iconsiam') || n.includes('sooksiam')) return '🍜';
+  if (n.includes('garden') || n.includes('park') || n.includes('lumphini') || n.includes('national park') || n.includes('forest')) return '🌿';
+  if (n.includes('cave')) return '🪨';
+  if (n.includes('safari') || n.includes('night safari') || n.includes('zoo')) return '🦁';
+  if (n.includes('meditation') || n.includes('retreat') || n.includes('pa pae') || n.includes('monk')) return '🧘';
+  if (n.includes('edc') || n.includes('festival') || n.includes('rhythm park') || n.includes('carnival magic')) return '🎪';
+  if (n.includes('observation') || n.includes('mahanakhon') || n.includes('skywalk') || n.includes('supertree')) return '🔭';
+  if (n.includes('fireworks') || n.includes('nye') || n.includes('new year')) return '🎆';
+  if (n.includes('airport') || n.includes('jewel') || n.includes('changi')) return '✈';
+  if (n.includes('pier') || n.includes('rassada')) return '⚓';
+  if (n.includes('viewpoint') || n.includes('promthep') || n.includes('windmill') || n.includes('big buddha') || n.includes('doi suthep')) return '🗻';
+  if (n.includes('chinatown') || n.includes('little india') || n.includes('khao san')) return '🏘';
+  if (n.includes('hot spring')) return '♨';
+  if (n.includes('hinoki')) return '🌲';
+  if (n.includes('sentosa') || n.includes('universal')) return '🎢';
+  if (n.includes('cloud forest') || n.includes('flower dome')) return '🌸';
+  if (n.includes('ayutthaya') || n.includes('historical')) return '🏺';
+  if (n.includes('golden triangle')) return '⚜';
+  if (n.includes('james bond') || n.includes('phang nga bay')) return '🚤';
+  return '📍';
+}
+
 // ═══════════════════════════════════════════════
-// COMPLETE DATA — based on final itinerary PDF
+// COMPLETE DATA
 // ═══════════════════════════════════════════════
 const STOPS = [
   {
@@ -226,28 +300,34 @@ const STOPS = [
     transport:'✈ CLE → ORD/JFK → Seoul (ICN) or Tokyo (NRT) → BKK Suvarnabhumi (~24 hrs). Land Dec 13 morning. 🚂 Depart Dec 17 ~19:50: <a href="https://12go.asia/en/train/bangkok/surat-thani" target="_blank">Train #85 on 12go.asia</a>, 1st class 2-berth cabin. Two cabins (one per couple).',
     mapsUrl:'https://maps.google.com/?q=Bangkok,Thailand',
     walkPath:[
-      {lat:13.7499,lng:100.4915}, // Grand Palace
-      {lat:13.7465,lng:100.4927}, // Wat Pho
-      {lat:13.7453,lng:100.4910}, // Tha Tien pier
-      {lat:13.7439,lng:100.4884}, // Wat Arun
+      {lat:13.7499,lng:100.4915},
+      {lat:13.7465,lng:100.4927},
+      {lat:13.7453,lng:100.4910},
+      {lat:13.7439,lng:100.4884},
     ],
     walkLabel:'River Temple Circuit: Grand Palace → Wat Pho → Ferry → Wat Arun',
     attrs:[
       {name:'The Grand Palace',placeId:'ChIJy9sKoU6Z4jARKCRVuJFb0dc',type:'Palace & Temple Complex',day:'Dec 14 — 08:30',rating:'4.6★ (77,910)',lat:13.7499,lng:100.4915,mapsUrl:'https://maps.google.com/?cid=17218888880088334378',bookUrl:'https://www.viator.com/en-US/tours/Bangkok/Grand-Palace-Guided-Tour/d343-5391P23',desc:'18th-century royal complex housing Wat Phra Kaew and the Emerald Buddha. Open 08:30–15:30. 500 THB. Dress code enforced — shoulders + knees covered (sarongs at gate). Arrive at opening to beat crowds.'},
       {name:'Wat Pho — Reclining Buddha',placeId:'ChIJmaPD7i6Z4jARf0QKa2FrGhc',type:'Buddhist Temple',day:'Dec 14 — 10:30',rating:'4.8★ (7,945)',lat:13.7465,lng:100.4927,mapsUrl:'https://maps.google.com/?cid=7705533375476916128',bookUrl:'https://watpomassage.com',desc:'46m gold Reclining Buddha — Thailand\'s most famous temple. Oldest public university of traditional medicine. Get a 30-min Thai massage at the school on site (~$10). 200 THB entry. 8 min walk south from Grand Palace.'},
-      {name:'Wat Arun Ratchawararam',placeId:'ChIJaSv_6gaZ4jARnbiUVn6Z_YY',type:'Buddhist Temple',day:'Dec 14 — 14:00',rating:'4.7★ (44,239)',lat:13.7439,lng:100.4884,mapsUrl:'https://maps.google.com/?cid=13729523753940879764',bookUrl:null,desc:'Temple of Dawn — porcelain-encrusted riverside prang. Cross the Chao Phraya by ferry from Tha Tien pier (4 THB, 3 min). Best in late afternoon golden light. 100 THB. Wat Phra That Phra Wanram is adjacent.'},
+      {name:'Wat Arun Ratchawararam',placeId:'ChIJaSv_6gaZ4jARnbiUVn6Z_YY',type:'Buddhist Temple',day:'Dec 14 — 14:00',rating:'4.7★ (44,239)',lat:13.7439,lng:100.4884,mapsUrl:'https://maps.google.com/?cid=13729523753940879764',bookUrl:null,desc:'Temple of Dawn — porcelain-encrusted riverside prang. Cross the Chao Phraya by ferry from Tha Tien pier (4 THB, 3 min). Best in late afternoon golden light. 100 THB.'},
       {name:'The Deck by Arun Residence',placeId:'ChIJXW-7kH462jARZ0ObpXBi1Jg',type:'Restaurant — Riverside Terrace',day:'Dec 14 — 12:30 (lunch)',rating:'4.4★ (3,535)',lat:13.7446,lng:100.4890,mapsUrl:'https://maps.google.com/?q=The+Deck+by+Arun+Residence+Bangkok',bookUrl:null,desc:'Rooftop terrace with direct Grand Palace view across the Chao Phraya. $$$. Fusion menu. Reserve ahead — the view is unbeatable for lunch between Wat Pho and Wat Arun.'},
       {name:'Chinatown — Yaowarat Road',placeId:'ChIJD-NLSWyZ4jARCQ3OoWjiHYs',type:'Street Food & Night Market',day:'Dec 13 evening + Dec 16',rating:'4.5★ (3,671)',lat:13.7373,lng:100.5129,mapsUrl:'https://maps.google.com/?q=Yaowarat+Road+Bangkok',bookUrl:null,desc:'Bangkok\'s most electric street food strip. Start at Odean Circle, walk west. Neon-lit woks, oyster omelette, roasted duck, dim sum, mango sticky rice. Best atmosphere 7–10pm. Take Chao Phraya express boat south to ICONSIAM after.'},
       {name:'ICONSIAM',placeId:'ChIJpVOBwLCf4jARNPzQU1E2Tig',type:'Shopping & SookSiam Indoor Floating Market',day:'Dec 13 evening / any evening',rating:'4.7★ (57,438)',lat:13.7262,lng:100.5096,mapsUrl:'https://maps.google.com/?q=ICONSIAM+Bangkok',bookUrl:null,desc:'Riverside mega-mall with SookSiam — an indoor floating market with 100+ street food vendors from all Thai regions. Best food hall in Bangkok. Free shuttle boat from Sathorn pier and many riverside hotels. Open until midnight.'},
-      {name:'Chatuchak Weekend Market',placeId:'ChIJ3fiD6BSc4jARS324hNeR8ZE',type:'Market (Sat–Sun only)',day:'Dec 14 — 15:00',rating:'4.4★ (55,419)',lat:13.7998,lng:100.5504,mapsUrl:'https://maps.google.com/?cid=8440027765490052243',bookUrl:null,desc:'World\'s largest weekend market — 35 acres, 15,000 stalls. Open Sat–Sun 9am–6pm. Clothes, antiques, street food, plants, art. Best visited 15:00–18:00 when it\'s cooler and less packed. Take MRT to Chatuchak Park.'},
-      {name:'Octave Rooftop Lounge & Bar',placeId:'ChIJhxshNqWf4jARgYxEW8hBGcE',type:'Rooftop Bar',day:'Dec 14 evening',rating:'4.4★ (6,051)',lat:13.7235,lng:100.5805,mapsUrl:'https://maps.google.com/?cid=10437060213803200004',bookUrl:'https://www.marriott.com/en-us/hotels/bkkmc-bangkok-marriott-hotel-sukhumvit/',desc:'360° Bangkok panorama from Marriott Sukhumvit. Opens 17:00. Min spend ~1,800 THB/person. Book a table — sunset slot fills fast. DJ from 8pm. Also consider: Sky Bar (Lebua, formal, The Hangover bar) or Vertigo & Moon Bar (Banyan Tree, finest panorama).'},
+      {name:'Chatuchak Weekend Market',placeId:'ChIJ3fiD6BSc4jARS324hNeR8ZE',type:'Market (Sat–Sun only)',day:'Dec 14 — 15:00',rating:'4.4★ (55,419)',lat:13.7998,lng:100.5504,mapsUrl:'https://maps.google.com/?cid=8440027765490052243',bookUrl:null,desc:'World\'s largest weekend market — 35 acres, 15,000 stalls. Open Sat–Sun 9am–6pm. Clothes, antiques, street food, plants, art. Best visited 15:00–18:00 when cooler. Take MRT to Chatuchak Park.'},
+      {name:'Octave Rooftop Lounge & Bar',placeId:'ChIJhxshNqWf4jARgYxEW8hBGcE',type:'Rooftop Bar',day:'Dec 14 evening',rating:'4.4★ (6,051)',lat:13.7235,lng:100.5805,mapsUrl:'https://maps.google.com/?cid=10437060213803200004',bookUrl:'https://www.marriott.com/en-us/hotels/bkkmc-bangkok-marriott-hotel-sukhumvit/',desc:'360° Bangkok panorama from Marriott Sukhumvit. Opens 17:00. Min spend ~1,800 THB/person. Book a table — sunset slot fills fast. DJ from 8pm.'},
+      {name:'Sky Bar — Lebua at State Tower',placeId:'ChIJm1a-ib2Y4jARtPi3eTwFXME',type:'Rooftop Bar (The Hangover)',day:'Dec 14–16 evenings',rating:'4.3★ (7,218)',lat:13.7234,lng:100.5143,mapsUrl:'https://maps.google.com/?q=Sky+Bar+Lebua+Bangkok',bookUrl:'https://www.lebua.com/sky-bar/',desc:'The famous "Hangover" bar — 63 floors, open to the sky. Circular bar atop State Tower on the Chao Phraya bend. Smart casual dress code (no shorts/flip-flops). $$$$. Book a table online for the best panorama of the river.'},
+      {name:'Vertigo & Moon Bar — Banyan Tree',placeId:'ChIJUVRdQr2Y4jARVPrBuSmMjXc',type:'Rooftop Bar',day:'Dec 14–16 evenings',rating:'4.2★ (4,834)',lat:13.7246,lng:100.5309,mapsUrl:'https://maps.google.com/?q=Vertigo+Moon+Bar+Banyan+Tree+Bangkok',bookUrl:'https://www.banyantree.com/thailand/bangkok/dining/vertigo-and-moon-bar',desc:'Finest panorama in Bangkok — 61st floor outdoor rooftop with unobstructed 360° views. Dress code (no shorts/sandals). Arrive at opening (17:00) for golden hour. Open-air jazz nightly. $$$$. Book ahead.'},
       {name:'Khlong Lad Mayom Floating Market',placeId:'ChIJEe2E-PYxUDARcfOQB3Woa9w',type:'Floating Market (Sat–Sun)',day:'Dec 15 — 07:00',rating:'4.3★ (11,528)',lat:13.7535,lng:100.4186,mapsUrl:'https://maps.google.com/?q=Khlong+Lat+Mayom+Floating+Market',bookUrl:null,desc:'RECOMMENDED floating market — 45 min from city center. Authentic, mostly locals. Canals with paddleboat vendors, fresh food stalls, craft beer. Sat–Sun only. Far more genuine than Damnoen Saduak. Go early (7–9am) then head to Ayutthaya.'},
-      {name:'Rajadamnern Muay Thai Stadium',placeId:'ChIJEyraT0CZ4jAREz5xKJKTLDM',type:'Muay Thai Stadium',day:'Dec 15 — 19:00',rating:'4.8★ (8,318)',lat:13.7611,lng:100.5085,mapsUrl:'https://maps.google.com/?cid=4840895898665467700',bookUrl:'https://www.rajadamnern.com',desc:'Bangkok\'s legendary 1945 Muay Thai stadium. Bouts run 18:30–22:00 on Mon/Wed/Thu/Sun. Tickets 800–2,000 THB. Book online. Immersive Thai cultural experience — proper ringside seats are worth the premium.'},
-      {name:'Ayutthaya Historical Park',placeId:'ChIJ-UkaTEl04jAR2QgEGFAM1dU',type:'UNESCO Day Trip (~1.5 hrs north)',day:'Dec 15 — 10:30',rating:'4.7★ (25,240)',lat:14.3569,lng:100.5675,mapsUrl:'https://maps.google.com/?q=Ayutthaya+Historical+Park',bookUrl:'https://www.viator.com/en-US/tours/Bangkok/Ayutthaya-Day-Trip-from-Bangkok/d343-73830P1',desc:'Ancient Siamese capital — UNESCO World Heritage Site. Famous Buddha head in tree roots at Wat Mahathat. Three-prang royal temple at Wat Phra Si Sanphet. Rent bicycles on site ~50 THB/hr. Guided tour ~$40/person includes transport from Bangkok.'},
-      {name:'King Power Mahanakhon',placeId:'ChIJGzV2mdKY4jARdIb62T7BoE4',type:'Observation Deck',day:'Dec 16 — 09:00',rating:'4.7★ (28,823)',lat:13.7240,lng:100.5285,mapsUrl:'https://maps.google.com/?q=King+Power+Mahanakhon+Bangkok',bookUrl:'https://kingpowermahanakhon.co.th/en/',desc:'78th-floor glass skywalk — 314m above Bangkok. 880 THB. Book online to skip lines. Stand on the glass floor panels for an unforgettable perspective. Indoor + outdoor decks. One of Bangkok\'s best experiences.'},
-      {name:'Thao Maha Brahma (Erawan Shrine)',placeId:'ChIJy9sKoU6Z4jARKCRVuJFb0dc',type:'Sacred Shrine',day:'Dec 16 — 09:00',rating:'4.7★ (6,752)',lat:13.7444,lng:100.5393,mapsUrl:'https://maps.google.com/?q=Erawan+Shrine+Bangkok',bookUrl:null,desc:'Bangkok\'s most famous Hindu shrine at the Ploenchit/Ratchadamri intersection. Thai classical dancers perform offerings throughout the day. Free entry. Takes 15 min — stop here before or after King Power Mahanakhon.'},
+      {name:'Damnoen Saduak Floating Market',placeId:'ChIJ-3DpLukmUTARXxJDT5YJPWU',type:'Floating Market (Tourist Classic)',day:'Dec 15 (day trip option)',rating:'4.1★ (21,463)',lat:13.5182,lng:99.9577,mapsUrl:'https://maps.google.com/?q=Damnoen+Saduak+Floating+Market',bookUrl:'https://www.viator.com/en-US/tours/Bangkok/Damnoen-Saduak-Floating-Market/d343-4285DAMLOEI',desc:'~90 min from Bangkok. Classic canal market — wooden boats with fruit, pad thai, souvenirs. Very touristy but iconic. Most photogenic 8–9am before crowds peak. Combine with Maeklong Railway Market on same day.'},
+      {name:'Rajadamnern Muay Thai Stadium',placeId:'ChIJEyraT0CZ4jAREz5xKJKTLDM',type:'Muay Thai Stadium',day:'Dec 15 — 19:00',rating:'4.8★ (8,318)',lat:13.7611,lng:100.5085,mapsUrl:'https://maps.google.com/?cid=4840895898665467700',bookUrl:'https://www.rajadamnern.com',desc:'Bangkok\'s legendary 1945 Muay Thai stadium. Bouts run 18:30–22:00 on Mon/Wed/Thu/Sun. Tickets 800–2,000 THB. Book online. Immersive Thai cultural experience — ringside seats are worth the premium.'},
+      {name:'Train Night Market Ratchada',placeId:'ChIJlYvmF4ec4jARzaS9zHT9Eag',type:'Night Market',day:'Dec 13–16 evenings (Wed–Sun)',rating:'4.3★ (25,471)',lat:13.7758,lng:100.5636,mapsUrl:'https://maps.google.com/?q=Talad+Rod+Fai+Ratchada+Bangkok',bookUrl:null,desc:'Talad Rod Fai 2 — Instagram-famous market under a sea of colorful umbrellas. Vintage goods, street food, live music. Open Wed–Sun from 17:00. MRT Thailand Cultural Centre (exit 3). More energetic crowd than Chatuchak.'},
+      {name:'Lumphini Park',placeId:'ChIJk0RBqLiZ4jARJ7hYgf-E_m0',type:'Urban Park',day:'Dec 13–16 mornings',rating:'4.5★ (42,382)',lat:13.7308,lng:100.5418,mapsUrl:'https://maps.google.com/?q=Lumphini+Park+Bangkok',bookUrl:null,desc:'Bangkok\'s lungs — 142 acres of lake and greenery in the heart of the city. Morning tai chi, monitor lizards in the lake. Great for a 06:00–07:30 run or stroll before the heat. MRT Lumphini or Silom.'},
+      {name:'Khao San Road',placeId:'ChIJdwWChvWZ4jARZ6jAnOdcREU',type:'Backpacker Strip & Nightlife',day:'Dec 13–16 evenings',rating:'4.1★ (18,745)',lat:13.7589,lng:100.4972,mapsUrl:'https://maps.google.com/?q=Khao+San+Road+Bangkok',bookUrl:null,desc:'Bangkok\'s iconic backpacker strip near the Grand Palace. Neon-lit bars, cheap buckets, live music, street food, pad thai carts. Chaotic and fun for at least one night. ~10 min tuk-tuk from Tha Tien pier after visiting the temples.'},
+      {name:'Ayutthaya Historical Park',placeId:'ChIJ-UkaTEl04jAR2QgEGFAM1dU',type:'UNESCO Day Trip (~1.5 hrs north)',day:'Dec 15 — 10:30',rating:'4.7★ (25,240)',lat:14.3569,lng:100.5675,mapsUrl:'https://maps.google.com/?q=Ayutthaya+Historical+Park',bookUrl:'https://www.viator.com/en-US/tours/Bangkok/Ayutthaya-Day-Trip-from-Bangkok/d343-73830P1',desc:'Ancient Siamese capital — UNESCO World Heritage Site. Famous Buddha head in tree roots at Wat Mahathat. Three-prang royal temple at Wat Phra Si Sanphet. Rent bicycles on site ~50 THB/hr. Guided tour ~$40/person includes transport.'},
+      {name:'King Power Mahanakhon',placeId:'ChIJGzV2mdKY4jARdIb62T7BoE4',type:'Observation Deck',day:'Dec 16 — 09:00',rating:'4.7★ (28,823)',lat:13.7240,lng:100.5285,mapsUrl:'https://maps.google.com/?q=King+Power+Mahanakhon+Bangkok',bookUrl:'https://kingpowermahanakhon.co.th/en/',desc:'78th-floor glass skywalk — 314m above Bangkok. 880 THB. Book online to skip lines. Stand on the glass floor panels for an unforgettable perspective. Indoor + outdoor decks.'},
+      {name:'Thao Maha Brahma (Erawan Shrine)',placeId:'ChIJi12j3ame4jARHAq5pOHm_Qc',type:'Sacred Shrine',day:'Dec 16 — 09:00',rating:'4.7★ (6,752)',lat:13.7444,lng:100.5393,mapsUrl:'https://maps.google.com/?q=Erawan+Shrine+Bangkok',bookUrl:null,desc:'Bangkok\'s most famous Hindu shrine at the Ploenchit/Ratchadamri intersection. Thai classical dancers perform offerings throughout the day. Free entry. Takes 15 min — stop here before or after King Power Mahanakhon.'},
       {name:'Asiatique The Riverfront',placeId:'ChIJtepc75aY4jARVvgRfYrM38s',type:'Night Market',day:'Dec 16 evening',rating:'4.4★ (73,222)',lat:13.7044,lng:100.5033,mapsUrl:'https://maps.google.com/?cid=11693148413978992086',bookUrl:null,desc:'Vintage trading port riverside market. Open-air warehouses with 1,500+ shops and restaurants. Ferris wheel, live shows. Free shuttle boat from Sathorn pier (runs 4pm–11:30pm). Perfect final Bangkok evening.'},
-      {name:'Soi Sukhumvit 11',placeId:'ChIJhxshNqWf4jARgYxEW8hBGcE',type:'Bar Street',day:'Dec 14–16 evenings',rating:'4.4★',lat:13.7448,lng:100.5573,mapsUrl:'https://maps.google.com/?q=Soi+11+Sukhumvit+Bangkok',bookUrl:null,desc:'Best bar street in Bangkok. Mix of upscale Thai bars, international restaurants, and clubs. Walking distance from Nana BTS station. After rooftop drinks, head here for a nightcap or late dinner.'},
+      {name:'Soi Sukhumvit 11',placeId:'NOID_soisukhumvit11',type:'Bar Street',day:'Dec 14–16 evenings',rating:'4.4★',lat:13.7448,lng:100.5573,mapsUrl:'https://maps.google.com/?q=Soi+11+Sukhumvit+Bangkok',bookUrl:null,desc:'Best bar street in Bangkok. Mix of upscale Thai bars, international restaurants, and clubs. Walking distance from Nana BTS station. After rooftop drinks, head here for a nightcap or late dinner.'},
     ]
   },
   {
@@ -263,8 +343,8 @@ const STOPS = [
       {name:'Cheow Lan Lake — Floating Bungalows',placeId:'ChIJ99wwYGg2UTAR9cI8eds2OhQ',type:'Floating Bungalows (2 nights)',day:'Dec 17–19',rating:'4.7★ (409)',lat:8.9766,lng:98.8044,mapsUrl:'https://maps.google.com/?q=Cheow+Lan+Lake+Khao+Sok',bookUrl:'https://panvaree.com',desc:'Emerald lake ringed by 400m limestone karsts — Jurassic Park scenery. Book Panvaree or Greenview Resort. Floating bungalows directly on the water — wake up to mist rising off the lake. December peak season fills months in advance.'},
       {name:'Khao Sok National Park',placeId:'ChIJX5d1Mn4oUTARMK0fzC4Xf44',type:'Rainforest & Jungle',day:'Dec 17–19',rating:'4.7★ (8,656)',lat:8.9020,lng:98.5310,mapsUrl:'https://maps.google.com/?cid=10267951165188582704',bookUrl:null,desc:'160-million-year-old rainforest — older than the Amazon. Guided jungle hike (half-day, arrange through bungalow), wildlife spotting (gibbons, hornbills, monitor lizards), cave exploration, night safari with ranger. 300 THB park entry.'},
       {name:'Coral Cave Exploration',placeId:'ChIJJ970f4FIUTARF0JM-oWEq7U',type:'Cave Tour',day:'Dec 17 afternoon',rating:'4.3★',lat:8.9158,lng:98.8864,mapsUrl:'https://maps.google.com/?q=Coral+Cave+Khao+Sok',bookUrl:null,desc:'Accessible by short boat + 20-min jungle walk from bungalows. Stalactites and stalagmites deep in the karst. Best done Day 1 afternoon after check-in. Arrange through bungalow operator. Bring headlamp.'},
-      {name:'Night Safari — Khao Sok',placeId:'ChIJX5d1Mn4oUTARMK0fzC4Xf44',type:'Wildlife Night Walk',day:'Dec 17 evening (~20:00)',rating:'4.7★',lat:8.9100,lng:98.5350,mapsUrl:'https://maps.google.com/?q=Khao+Sok+National+Park',bookUrl:null,desc:'Spotlighting for nocturnal wildlife with a ranger along jungle trails — best experience of the Khao Sok stay. Gibbons, flying squirrels, snakes, insects. Book through national park or bungalow. ~2 hrs.'},
-      {name:'Dawn on Cheow Lan Lake',placeId:'ChIJ99wwYGg2UTAR9cI8eds2OhQ',type:'Photography + Kayaking',day:'Dec 18 — 05:30',rating:'4.9★ (photographers say)',lat:8.9800,lng:98.8100,mapsUrl:'https://maps.google.com/?q=Cheow+Lan+Lake',bookUrl:null,desc:'Set alarm for 05:30. Mist rising off the emerald lake against limestone karst cliffs at dawn — the best photograph of the entire trip. Rent a kayak from the bungalow and paddle out in complete silence before anyone else wakes up.'},
+      {name:'Night Safari — Khao Sok',placeId:'ChIJX5d1Mn4oUTARMK0fzC4Xf44',type:'Wildlife Night Walk',day:'Dec 17 evening (~20:00)',rating:'4.7★',lat:8.9100,lng:98.5350,mapsUrl:'https://maps.google.com/?q=Khao+Sok+National+Park',bookUrl:null,desc:'Spotlighting for nocturnal wildlife with a ranger along jungle trails. Gibbons, flying squirrels, snakes, insects. Book through national park or bungalow. ~2 hrs. Best experience of the Khao Sok stay.'},
+      {name:'Dawn on Cheow Lan Lake',placeId:'ChIJ99wwYGg2UTAR9cI8eds2OhQ',type:'Photography + Kayaking',day:'Dec 18 — 05:30',rating:'4.9★',lat:8.9800,lng:98.8100,mapsUrl:'https://maps.google.com/?q=Cheow+Lan+Lake',bookUrl:null,desc:'Set alarm for 05:30. Mist rising off the emerald lake against limestone karst cliffs at dawn — the best photograph of the entire trip. Rent a kayak from the bungalow and paddle out in complete silence.'},
     ]
   },
   {
@@ -276,24 +356,33 @@ const STOPS = [
     transport:'🚐 Van from Khao Sok (~3 hrs). Arrive evening Dec 19. Stay Laguna/Bang Tao — 1km from EDC Rhythm Park. ✈ Depart Dec 24: <a href="https://www.bangkokair.com" target="_blank">Bangkok Airways</a> HKT → CNX via BKK.',
     mapsUrl:'https://maps.google.com/?q=Phuket,Thailand',
     walkPath:[
-      {lat:7.8857,lng:100.4909},
+      {lat:7.8748,lng:98.4032},
       {lat:7.8849,lng:98.3876},
       {lat:7.8843,lng:98.3901},
+      {lat:7.8859,lng:98.3909},
     ],
-    walkLabel:'Old Phuket Town Walk: Thanon Talang → Dibuk Road → Raya Restaurant',
+    walkLabel:'Old Town Walk: Rassada Pier → Thanon Talang → Dibuk Road → Raya Restaurant',
     attrs:[
-      {name:'EDC Thailand — Rhythm Park',placeId:'ChIJ8Tyhv283UDAR8c0BlLHC9EY',type:'Music Festival (Dec 20)',day:'Dec 20 — gates 15:00',rating:'4.6★ (48)',lat:8.0052,lng:98.3130,mapsUrl:'https://maps.google.com/?q=Rhythm+Park+Laguna+Phuket',bookUrl:'https://thailand.electricdaisycarnival.com/en/',desc:'Electric Daisy Carnival 2026 — 3rd edition. Dec 18–20 at Rhythm Park, Laguna Phuket. Pick Dec 20 (Saturday) for peak energy. GA 1-day pass ~$249 USD. Age 20+, physical passport required at gate. Walk or short shuttle from Laguna Airbnb.'},
-      {name:'Old Phuket Town + Thanon Talang',placeId:'ChIJyXu3hvoxUDAR86GPJxPu9G8',type:'Historic District',day:'Dec 19 afternoon + Dec 21',rating:'4.5★',lat:7.8849,lng:98.3876,mapsUrl:'https://maps.google.com/?q=Old+Phuket+Town',bookUrl:null,desc:'Sino-Portuguese pastel shophouses, street murals, boutique cafés. Walk from Thalang Road south to Dibuk Road. Thanon Talang is the most photogenic street for photos. Raya Restaurant (famous crab curry, $$$) and One Chun Cafe (local Thai-Chinese, $$) are must-eats.'},
-      {name:'Raya Restaurant',placeId:'ChIJEe2E-PYxUDARcfOQB3Woa9w',type:'Restaurant — Heritage Shophouse',day:'Dec 19 or 21 dinner',rating:'4.4★ (3,328)',lat:7.8859,lng:98.3909,mapsUrl:'https://maps.google.com/?q=Raya+Restaurant+Phuket',bookUrl:null,desc:'Iconic Old Phuket Town restaurant in a restored Sino-Portuguese shophouse. Famous for crab omelette and Southern Thai crab curry. Book ahead — fills fast. $$-$$$.'},
-      {name:'Nai Yang Beach',placeId:'ChIJX2uf05s1UDAROIBBsTjQq1o',type:'Beach',day:'Dec 20 morning (pre-EDC)',rating:'4.4★ (1,230)',lat:8.1644,lng:98.2989,mapsUrl:'https://maps.google.com/?q=Nai+Yang+Beach+Phuket',bookUrl:null,desc:'Closest beach to Laguna/EDC area — just 10 min drive. Quiet, long, local vibe, protected by national park. Great for resting up the morning before EDC. Almost no tourists. Beautiful sunsets.'},
+      {name:'EDC Thailand — Rhythm Park',placeId:'ChIJ8Tyhv283UDAR8c0BlLHC9EY',type:'Music Festival (Dec 20)',day:'Dec 20 — gates 15:00',rating:'4.6★',lat:8.0052,lng:98.3130,mapsUrl:'https://maps.google.com/?q=Rhythm+Park+Laguna+Phuket',bookUrl:'https://thailand.electricdaisycarnival.com/en/',desc:'Electric Daisy Carnival 2026 — 3rd edition at Rhythm Park, Laguna Phuket. Dec 18–20 — pick Dec 20 (Saturday) for peak energy. GA 1-day pass ~$249 USD. Age 20+, physical passport required. Walk or short shuttle from Laguna Airbnb.'},
+      {name:'Rassada Pier',placeId:'ChIJeXfKCf0yUDARkGJxHVl5v4o',type:'Ferry Departure Point',day:'Dec 22 — 07:00 departure',rating:'4.2★',lat:7.8748,lng:98.4032,mapsUrl:'https://maps.google.com/?q=Rassada+Pier+Phuket',bookUrl:null,desc:'Main pier for speedboat day trips to Phi Phi Islands and Phang Nga Bay. Depart 07:00 to beat crowds. Grab to pier from most hotels ~150–200 THB. Old Phuket Town walking route starts just west of here.'},
+      {name:'Old Phuket Town + Thanon Talang',placeId:'ChIJyXu3hvoxUDAR86GPJxPu9G8',type:'Historic District',day:'Dec 19 afternoon + Dec 21',rating:'4.5★',lat:7.8849,lng:98.3876,mapsUrl:'https://maps.google.com/?q=Old+Phuket+Town',bookUrl:null,desc:'Sino-Portuguese pastel shophouses, street murals, boutique cafés. Walk from Rassada Pier area to Thalang Road south to Dibuk Road. Thanon Talang is the most photogenic street. Toggle "Directions" above for the full walking route.'},
+      {name:'Raya Restaurant',placeId:'ChIJhq1m6UYxUDAR-v3ViIAHtBA',type:'Restaurant — Heritage Shophouse',day:'Dec 19 or 21 dinner',rating:'4.4★ (3,328)',lat:7.8859,lng:98.3909,mapsUrl:'https://maps.google.com/?q=Raya+Restaurant+Phuket',bookUrl:null,desc:'Iconic Old Phuket Town restaurant in a restored Sino-Portuguese shophouse. Famous for crab omelette and Southern Thai crab curry. Book ahead — fills fast. $$-$$$.'},
+      {name:'One Chun Cafe & Restaurant',placeId:'ChIJlYfBt0YxUDAR1D6RNBaOHhA',type:'Restaurant — Thai-Chinese Heritage',day:'Dec 19 or 21 lunch',rating:'4.4★ (5,941)',lat:7.8856,lng:98.3904,mapsUrl:'https://maps.google.com/?q=One+Chun+Restaurant+Phuket',bookUrl:null,desc:'Beloved Old Town institution — Thai-Chinese home cooking in a charming shophouse. Cheaper than Raya but equally authentic. Famous for mee hokkien and braised pork. Go for lunch. Order the Phuket lobster when available.'},
+      {name:'Nai Yang Beach',placeId:'ChIJX2uf05s1UDAROIBBsTjQq1o',type:'Beach',day:'Dec 20 morning (pre-EDC)',rating:'4.4★ (1,230)',lat:8.1644,lng:98.2989,mapsUrl:'https://maps.google.com/?q=Nai+Yang+Beach+Phuket',bookUrl:null,desc:'Closest beach to Laguna/EDC area — just 10 min drive. Quiet, long, local vibe, protected by national park. Great for resting the morning before EDC. Almost no tourists. Beautiful sunsets.'},
       {name:'Freedom Beach',placeId:'ChIJ4S3VTuIkUDAR3mKUwV8K1Ks',type:'Secluded Beach',day:'Dec 21 morning',rating:'4.4★ (10,673)',lat:7.8938,lng:98.2792,mapsUrl:'https://maps.google.com/?q=Freedom+Beach+Phuket',bookUrl:null,desc:'Phuket\'s most beautiful hidden beach. Accessible by longtail boat from Patong (~100 THB, 15 min) or 20-min hike. Crystal clear water, soft sand, no jet skis. Go in the morning for calm water and fewer people.'},
-      {name:'Kamala Beach',placeId:'ChIJU6_SgWcwUDAR6BXy4ZRZXQQ',type:'Beach',day:'Dec 19 evening / Dec 21',rating:'4.4★ (3,796)',lat:7.9440,lng:98.2816,mapsUrl:'https://maps.google.com/?q=Kamala+Beach+Phuket',bookUrl:null,desc:'Relaxed, beautiful crescent beach 20 min from Laguna. Good base beach. Carnival Magic theme park is nearby. Less crowded than Patong. Good sunset drinks restaurants along the strip.'},
-      {name:'Karon Beach',placeId:'ChIJ1SemHHIlUDARH2WofLMBaOQ',type:'Beach',day:'Dec 21 afternoon',rating:'4.6★ (9,136)',lat:7.8439,lng:98.2936,mapsUrl:'https://maps.google.com/?q=Karon+Beach+Phuket',bookUrl:null,desc:'Wide, clean, less crowded than Patong. Great swimming, beautiful long stretch. Kata Beach is just south for surf. The lunch restaurants along Karon strip are excellent value.'},
-      {name:'Promthep Cape + Windmill Viewpoint',placeId:'ChIJtZgCJiEmUDARG1q53LLQaAs',type:'Sunset Viewpoints',day:'Dec 21 — 17:00',rating:'4.7★ (18,216)',lat:7.7618,lng:98.3053,mapsUrl:'https://maps.google.com/?cid=9871866988162636315',bookUrl:null,desc:'Southern tip of Phuket — best sunset on the island. 270° panoramic Andaman Sea views. Arrive 30 min before sunset. Windmill Viewpoint is 2km north and less crowded with similar views. Both in the same Grab trip. Dinner at Nai Harn Beach below after.'},
+      {name:'Kamala Beach',placeId:'ChIJU6_SgWcwUDAR6BXy4ZRZXQQ',type:'Beach',day:'Dec 19 evening / Dec 21',rating:'4.4★ (3,796)',lat:7.9440,lng:98.2816,mapsUrl:'https://maps.google.com/?q=Kamala+Beach+Phuket',bookUrl:null,desc:'Relaxed, beautiful crescent beach 20 min from Laguna. Good base beach. Less crowded than Patong. Good sunset drinks restaurants along the strip.'},
+      {name:'Karon Beach',placeId:'ChIJ1SemHHIlUDARH2WofLMBaOQ',type:'Beach',day:'Dec 21 afternoon',rating:'4.6★ (9,136)',lat:7.8439,lng:98.2936,mapsUrl:'https://maps.google.com/?q=Karon+Beach+Phuket',bookUrl:null,desc:'Wide, clean, less crowded than Patong. Great swimming, beautiful long stretch. Kata Beach is just south for surf. Lunch restaurants along Karon strip are excellent value.'},
+      {name:'Kata Beach',placeId:'ChIJpfvyFxQkUDARXlpwq1gWzJE',type:'Beach + Surf',day:'Dec 21',rating:'4.5★ (13,492)',lat:7.8197,lng:98.2987,mapsUrl:'https://maps.google.com/?q=Kata+Beach+Phuket',bookUrl:null,desc:'Beautiful bay with good waves for surfing December–March. Cleaner and less crowded than Patong. Great restaurants and bars along the beach road. Kata Noi (tiny cove just south) is even more scenic.'},
+      {name:'Nai Harn Beach',placeId:'ChIJY9PFUEQmUDARPeRjpz0UE-Y',type:'Beach',day:'Dec 21 late afternoon',rating:'4.6★ (7,285)',lat:7.7780,lng:98.3052,mapsUrl:'https://maps.google.com/?q=Nai+Harn+Beach+Phuket',bookUrl:null,desc:'Southern Phuket\'s most beautiful beach — wide bay with crystal clear water, ringed by hills. Less crowded than Kata/Karon. Combine with Promthep Cape for the best afternoon in Phuket. Excellent sunset dinner restaurants nearby.'},
+      {name:'Promthep Cape + Windmill Viewpoint',placeId:'ChIJtZgCJiEmUDARG1q53LLQaAs',type:'Sunset Viewpoints',day:'Dec 21 — 17:00',rating:'4.7★ (18,216)',lat:7.7618,lng:98.3053,mapsUrl:'https://maps.google.com/?cid=9871866988162636315',bookUrl:null,desc:'Southern tip of Phuket — best sunset on the island. 270° panoramic Andaman Sea views. Arrive 30 min before sunset. Windmill Viewpoint is 2km north with similar views and fewer crowds. Both in one Grab trip.'},
       {name:'Big Buddha Phuket',placeId:'ChIJ0W1qdZsxUDARiL2pCKfqkXc',type:'Landmark',day:'Dec 21 — 15:00',rating:'4.6★ (38,269)',lat:7.8274,lng:98.3128,mapsUrl:'https://maps.google.com/?q=Big+Buddha+Phuket',bookUrl:null,desc:'45m white marble Buddha statue on Nakkerd Hill. Free entry. Panoramic views of both the Andaman Sea and Chalong Bay simultaneously. Take Grab (~150 THB). On the way to Promthep Cape — do both in the same afternoon.'},
-      {name:'Phi Phi Islands + Maya Bay',placeId:'ChIJDT1Odr4gTjARcZ9UGni4nb8',type:'Speedboat Day Trip',day:'Dec 22 — depart 07:00',rating:'4.6★ (7,498)',lat:7.7407,lng:98.7784,mapsUrl:'https://maps.google.com/?cid=13807394858565148529',bookUrl:'https://www.viator.com/en-US/tours/Phuket/Phi-Phi-Islands-and-Maya-Bay-Speedboat-Day-Trip/d343-3428PHIPHI',desc:'Depart Rassada Pier 07:00 to beat crowds at Maya Bay. Phi Phi viewpoints hike (20 min, best photo of day), Maya Bay ("The Beach"), snorkeling at Pi Leh Bay + Ko Hong + Chicken Rock. Tour includes snorkel gear + guide. ~$70/person via Viator. Returns ~17:00.'},
-      {name:'Phang Nga Bay — James Bond Island',placeId:'ChIJ8QtsYcOsUTARY16P2GPh_RM',type:'Full Day Boat Tour',day:'Dec 23 — depart 08:00',rating:'4.6★ (836)',lat:8.2745,lng:98.5012,mapsUrl:'https://maps.google.com/?q=James+Bond+Island+Phang+Nga',bookUrl:'https://www.viator.com/en-US/tours/Phuket/Phang-Nga-Bay-and-James-Bond-Island-Day-Trip/d343-5391P12',desc:'Khao Phing Kan (James Bond Island) from "The Man with the Golden Gun". Sea cave kayaking through hidden hongs, Ko Hong Phang Nga, Ko Panyi floating village lunch, View Point Hong Island. ~$50/person via Viator. Returns ~17:00.'},
-      {name:'Patong Beach + Bangla Walking Street',placeId:'ChIJCwgz2sUkUDAR_6qZy8OVKEA',type:'Beach + Nightlife',day:'Dec 19 evening / optional',rating:'4.3★ (6,123)',lat:7.8990,lng:98.2963,mapsUrl:'https://maps.google.com/?q=Bangla+Walking+Street+Phuket',bookUrl:null,desc:'Phuket\'s main nightlife strip. Bangla Road is wall-to-wall bars and clubs from sundown. Go once for the experience — it\'s an institution. Good EDC warm-up energy. Illuzion Phuket nightclub (EDC-adjacent) is on this strip if energy allows post-festival.'},
+      {name:'Phi Phi Islands + Maya Bay',placeId:'ChIJDT1Odr4gTjARcZ9UGni4nb8',type:'Speedboat Day Trip',day:'Dec 22 — depart 07:00',rating:'4.6★ (7,498)',lat:7.7407,lng:98.7784,mapsUrl:'https://maps.google.com/?cid=13807394858565148529',bookUrl:'https://www.viator.com/en-US/tours/Phuket/Phi-Phi-Islands-and-Maya-Bay-Speedboat-Day-Trip/d343-3428PHIPHI',desc:'Depart Rassada Pier 07:00. Phi Phi viewpoints hike (20 min, best photo of day), Maya Bay ("The Beach"), snorkeling at Pi Leh Bay + Ko Hong + Chicken Rock. Tour includes gear + guide. ~$70/person. Returns ~17:00.'},
+      {name:'Phang Nga Bay — James Bond Island',placeId:'ChIJ8QtsYcOsUTARY16P2GPh_RM',type:'Full Day Boat Tour',day:'Dec 23 — depart 08:00',rating:'4.6★ (836)',lat:8.2745,lng:98.5012,mapsUrl:'https://maps.google.com/?q=James+Bond+Island+Phang+Nga',bookUrl:'https://www.viator.com/en-US/tours/Phuket/Phang-Nga-Bay-and-James-Bond-Island-Day-Trip/d343-5391P12',desc:'Khao Phing Kan ("The Man with the Golden Gun"). Sea cave kayaking through hidden hongs, Ko Hong Phang Nga, Ko Panyi floating village lunch, View Point Hong Island. ~$50/person via Viator. Returns ~17:00.'},
+      {name:'Ko Panyi — Floating Village',placeId:'ChIJa_2mObirUTARdM2o7PvH_oo',type:'Floating Muslim Village',day:'Dec 23 (Phang Nga day trip)',rating:'4.4★ (5,218)',lat:8.2872,lng:98.5289,mapsUrl:'https://maps.google.com/?q=Ko+Panyi+Phang+Nga',bookUrl:null,desc:'Centuries-old fishing village built entirely on stilts above the Andaman Sea, sheltered by a limestone karst. Stop for seafood lunch on the tour. The football pitch — also on stilts — is legendary.'},
+      {name:'Phuket Elephant Sanctuary',placeId:'ChIJ7TNuN8cyUDARWz3e3TFNJdo',type:'Ethical Elephant Sanctuary',day:'Dec 21 morning (optional)',rating:'4.7★ (2,847)',lat:8.0950,lng:98.3640,mapsUrl:'https://maps.google.com/?q=Phuket+Elephant+Sanctuary',bookUrl:'https://www.phuketelephant.com',desc:'Award-winning ethical sanctuary in the hills of Paklok. Feed, walk alongside, watch river bathing — no riding. ~$80/person. Half-day tour with pickup. Great backup if Khao Sok\'s schedule changes. Book direct.'},
+      {name:'Patong Beach + Bangla Walking Street',placeId:'ChIJCwgz2sUkUDAR_6qZy8OVKEA',type:'Beach + Nightlife',day:'Dec 19 evening / optional',rating:'4.3★ (6,123)',lat:7.8990,lng:98.2963,mapsUrl:'https://maps.google.com/?q=Bangla+Walking+Street+Phuket',bookUrl:null,desc:'Phuket\'s main nightlife strip. Bangla Road is wall-to-wall bars and clubs from sundown. Go once for the experience — it\'s an institution. Good EDC warm-up energy.'},
+      {name:'Illuzion Phuket',placeId:'ChIJszkqtMckUDARzHY_lBbPXGg',type:'Nightclub',day:'Dec 20 post-EDC / optional',rating:'4.2★ (4,019)',lat:7.8940,lng:98.2978,mapsUrl:'https://maps.google.com/?q=Illuzion+Phuket',bookUrl:'https://www.illuzionphuket.com',desc:'Phuket\'s biggest club — capacity 5,000. EDC-adjacent production quality with international DJs. On Bangla Road in Patong. Open Tue–Sun. $$. Skip if exhausted after EDC but great energy booster night before.'},
+      {name:'Carnival Magic',placeId:'ChIJiznpRiAvUDARYGpHFuMRlRI',type:'Theme Park',day:'Dec 21 optional',rating:'4.3★ (2,614)',lat:7.9430,lng:98.2867,mapsUrl:'https://maps.google.com/?q=Carnival+Magic+Phuket',bookUrl:'https://www.carnivalmagic.co.th',desc:'Outdoor theme park in Kamala with cultural shows, zip lines, parade, and Jurassic Park-style dinosaur trail. Nightly 18:00–22:00. ~1,400 THB. Good if anyone wants something lighter than beach/bar on a middle day.'},
     ]
   },
   {
@@ -305,24 +394,30 @@ const STOPS = [
     transport:'✈ HKT → CNX via BKK. Arrive afternoon Dec 24 — Christmas Eve. Grab to Old City (~15 min). 🚐 Depart Dec 27: private taxi → Pa Pae (~70km, 1.5–2 hrs). <b>Arrive 13:00–17:00 window only.</b>',
     mapsUrl:'https://maps.google.com/?q=Chiang+Mai,Thailand',
     walkPath:[
-      {lat:18.7870,lng:98.9866}, // Wat Chedi Luang
-      {lat:18.7885,lng:98.9820}, // Wat Phra Singh
-      {lat:18.7880,lng:98.9824}, // Fah Lanna Spa
-      {lat:18.7870,lng:99.0010}, // Night Bazaar
+      {lat:18.7870,lng:98.9866},
+      {lat:18.7885,lng:98.9820},
+      {lat:18.7880,lng:98.9824},
+      {lat:18.7852,lng:99.0003},
     ],
     walkLabel:'Old City Loop: Wat Chedi Luang → Wat Phra Singh → Fah Lanna Spa → Night Bazaar',
     attrs:[
       {name:'Elephant Nature Park',placeId:'ChIJc8S16aE62jARUXKBvK2Xu8I',type:'Ethical Elephant Sanctuary — Full Day',day:'Dec 25 (Christmas Day)',rating:'4.5★ (599)',lat:19.0820,lng:98.8575,mapsUrl:'https://maps.google.com/?q=Elephant+Nature+Park+Chiang+Mai',bookUrl:'https://www.elephantnaturepark.org',desc:'Thailand\'s most respected ethical sanctuary. 116 rescued elephants — feed, walk alongside, watch river bathing. NO riding. ~$80/person. Pickup from hotel 08:30, returns 17:00 including transport and lunch. Book direct — fills weeks out in December.'},
-      {name:'Wat Phra That Doi Suthep',placeId:'ChIJtd3x37U52jARIX7FrlxMhp0',type:'Sacred Mountain Temple',day:'Dec 24 — 16:00 (sunset)',rating:'4.7★ (11,698)',lat:18.8050,lng:98.9216,mapsUrl:'https://maps.google.com/?cid=12285090148386524575',bookUrl:null,desc:'Sacred mountain temple 15km from city. 306 Naga staircase steps (or tram available). Golden chedi + panoramic Chiang Mai valley views. 30 THB entry. Christmas Eve here has a special atmosphere — Buddhist significance aligns with the festive season.'},
-      {name:'Wat Pha Lat — Monk\'s Trail',placeId:'ChIJ8QXjRbs52jARE8ij3nBsRmE',type:'Hidden Jungle Temple + Hike',day:'Dec 24 — on way down from Doi Suthep',rating:'4.7★',lat:18.7960,lng:98.9342,mapsUrl:'https://maps.google.com/?q=Wat+Pha+Lat+Monks+Trail+Chiang+Mai',bookUrl:null,desc:'Hidden jungle temple on the ancient monk\'s trail down from Doi Suthep. Buddha images among tree roots, forest streams, almost never crowded. 1 hr hike through jungle. Start at Forestry Department checkpoint and walk down — take Grab up to Doi Suthep first.'},
-      {name:'Wat Chedi Luang',placeId:'ChIJFRQRM5k62jARuqhLBJpw91w',type:'Ancient Temple — Old City',day:'Dec 24–26 evenings',rating:'4.7★ (17,987)',lat:18.7870,lng:98.9866,mapsUrl:'https://maps.google.com/?q=Wat+Chedi+Luang+Chiang+Mai',bookUrl:null,desc:'14th-century giant ruined chedi inside the Old City walls. Elephant statues on four corners. Illuminated at night — beautiful. 50 THB. Part of the Old City walking loop. Monks available for informal chats about Buddhism most evenings.'},
-      {name:'Wat Phra Singh',placeId:'ChIJbyRKbps62jAR6VTNF-fZVpY',type:'Buddhist Temple — Old City',day:'Dec 24–26',rating:'4.7★ (17,326)',lat:18.7885,lng:98.9820,mapsUrl:'https://maps.google.com/?q=Wat+Phra+Singh+Chiang+Mai',bookUrl:null,desc:'Most important Lanna-style temple in Chiang Mai. Houses the revered Phra Singh Buddha. Intricate wood carvings and gilded structures. Free entry. 5-min walk west from Wat Chedi Luang — both are in the Old City walking loop.'},
-      {name:'Wat Lok Moli',placeId:'ChIJbyRKbps62jAR6VTNF-fZVpY',type:'Buddhist Temple',day:'Dec 24–26',rating:'4.7★',lat:18.7930,lng:98.9858,mapsUrl:'https://maps.google.com/?q=Wat+Lok+Moli+Chiang+Mai',bookUrl:null,desc:'Beautiful Lanna-style temple just inside the north moat. Less visited than Wat Chedi Luang and Wat Phra Singh — quieter and more atmospheric. Part of the Old City walking route heading toward Tha Phae Gate.'},
-      {name:'Fah Lanna Spa — Old City',placeId:'ChIJf4MRhJ862jAR5R_u1-tX9pE',type:'Heritage Day Spa',day:'Dec 25 — 17:30',rating:'4.5★ (1,855)',lat:18.7880,lng:98.9824,mapsUrl:'https://maps.google.com/?q=Fah+Lanna+Spa+Chiang+Mai',bookUrl:'https://www.fahlannaspa.com',desc:'Top-rated Lanna heritage spa inside a restored colonial mansion in the Old City walls. Traditional Thai massage, herbal body treatments, facial. Book the 18:00 slot for Dec 25 — perfect recovery after Elephant Nature Park. Book ahead at fahlannaspa.com.'},
-      {name:'Chiang Mai Night Bazaar',placeId:'ChIJW0qnDKY62jARHbAmfwD1Lgs',type:'Night Market — Every Night',day:'Dec 24–26 evenings',rating:'4.3★ (26,688)',lat:18.7852,lng:99.0003,mapsUrl:'https://maps.google.com/?q=Chiang+Mai+Night+Bazaar',bookUrl:null,desc:'Nightly market on Changklan Road. Handcrafts, local art, clothing, street food, live music. Best after 7pm. Christmas Eve is especially festive with decorations and street performers. Every night — no Sat/Sun restriction like Tha Phae Walking Street.'},
-      {name:'Wat Rong Khun — White Temple',placeId:'ChIJD5RZzt-31zARo7esjg3V_Co',type:'Day Trip to Chiang Rai (~3 hrs)',day:'Dec 26 — 10:30',rating:'4.6★ (24,856)',lat:19.8233,lng:99.7627,mapsUrl:'https://maps.google.com/?cid=15804765427839541188',bookUrl:'https://www.viator.com/en-US/tours/Chiang-Mai/Chiang-Rai-and-Golden-Triangle-Day-Trip-from-Chiang-Mai/d5422-6116P11',desc:'Wat Rong Khun — entirely white + mirrored glass exterior. Unlike any temple in Asia. Surreal contemporary Buddhist art installation. Guided day tour from Chiang Mai also covers Black House + Blue Temple + Golden Triangle. ~$35–45/person via Viator.'},
+      {name:'Wat Phra That Doi Suthep',placeId:'ChIJtd3x37U52jARIX7FrlxMhp0',type:'Sacred Mountain Temple',day:'Dec 24 — 16:00 (sunset)',rating:'4.7★ (11,698)',lat:18.8050,lng:98.9216,mapsUrl:'https://maps.google.com/?cid=12285090148386524575',bookUrl:null,desc:'Sacred mountain temple 15km from city. 306 Naga staircase steps (or tram). Golden chedi + panoramic Chiang Mai valley views. 30 THB. Christmas Eve here has a special atmosphere.'},
+      {name:'Wat Pha Lat — Monk\'s Trail',placeId:'ChIJ8QXjRbs52jARE8ij3nBsRmE',type:'Hidden Jungle Temple + Hike',day:'Dec 24 — on way down from Doi Suthep',rating:'4.7★',lat:18.7960,lng:98.9342,mapsUrl:'https://maps.google.com/?q=Wat+Pha+Lat+Monks+Trail+Chiang+Mai',bookUrl:null,desc:'Hidden jungle temple on the ancient monk\'s trail. Buddha images among tree roots, forest streams, almost never crowded. 1 hr hike through jungle. Take Grab up to Doi Suthep first, then walk the trail down through Wat Pha Lat.'},
+      {name:'Wat Phra That Doi Kham',placeId:'ChIJVVVVlakX2jARnhVx1MN4Czs',type:'Temple — Golden Chedi',day:'Dec 24 or 26',rating:'4.6★ (3,821)',lat:18.7531,lng:98.9444,mapsUrl:'https://maps.google.com/?q=Wat+Phra+That+Doi+Kham+Chiang+Mai',bookUrl:null,desc:'17m golden seated Buddha on Doi Kham hill, south of the city. Far fewer tourists than Doi Suthep. Peaceful grounds with valley views. Accessible by Grab (~80 THB each way). The giant white rabbit statue near the temple is famous locally.'},
+      {name:'Wat Chedi Luang',placeId:'ChIJFRQRM5k62jARuqhLBJpw91w',type:'Ancient Temple — Old City',day:'Dec 24–26 evenings',rating:'4.7★ (17,987)',lat:18.7870,lng:98.9866,mapsUrl:'https://maps.google.com/?q=Wat+Chedi+Luang+Chiang+Mai',bookUrl:null,desc:'14th-century giant ruined chedi inside the Old City walls. Elephant statues on four corners. Illuminated at night — beautiful. 50 THB. Monks available for informal Buddhist chats most evenings.'},
+      {name:'Wat Phra Singh',placeId:'ChIJbyRKbps62jAR6VTNF-fZVpY',type:'Buddhist Temple — Old City',day:'Dec 24–26',rating:'4.7★ (17,326)',lat:18.7885,lng:98.9820,mapsUrl:'https://maps.google.com/?q=Wat+Phra+Singh+Chiang+Mai',bookUrl:null,desc:'Most important Lanna-style temple in Chiang Mai. Houses the revered Phra Singh Buddha. Intricate wood carvings and gilded structures. Free entry. 5-min walk west from Wat Chedi Luang.'},
+      {name:'Wat Lok Moli',placeId:'ChIJ10jmhsQ62jARqDMUoJ9Rv_M',type:'Buddhist Temple',day:'Dec 24–26',rating:'4.7★',lat:18.7930,lng:98.9858,mapsUrl:'https://maps.google.com/?q=Wat+Lok+Moli+Chiang+Mai',bookUrl:null,desc:'Beautiful Lanna-style temple just inside the north moat. Less visited than Wat Chedi Luang and Wat Phra Singh — quieter and more atmospheric. Part of the Old City walking route heading toward Tha Phae Gate.'},
+      {name:'Fah Lanna Spa — Old City',placeId:'ChIJf4MRhJ862jAR5R_u1-tX9pE',type:'Heritage Day Spa',day:'Dec 25 — 17:30',rating:'4.5★ (1,855)',lat:18.7880,lng:98.9824,mapsUrl:'https://maps.google.com/?q=Fah+Lanna+Spa+Chiang+Mai',bookUrl:'https://www.fahlannaspa.com',desc:'Top-rated Lanna heritage spa inside a restored colonial mansion in the Old City walls. Traditional Thai massage, herbal body treatments, facial. Book the 18:00 slot for Dec 25 — perfect recovery after Elephant Nature Park.'},
+      {name:'Chiang Mai Night Bazaar',placeId:'ChIJW0qnDKY62jARHbAmfwD1Lgs',type:'Night Market — Every Night',day:'Dec 24–26 evenings',rating:'4.3★ (26,688)',lat:18.7852,lng:99.0003,mapsUrl:'https://maps.google.com/?q=Chiang+Mai+Night+Bazaar',bookUrl:null,desc:'Nightly market on Changklan Road. Handcrafts, local art, clothing, street food, live music. Best after 7pm. Christmas Eve is especially festive. Every night — no Sat/Sun restriction like Tha Phae Walking Street.'},
+      {name:'Tha Phae Walking Street',placeId:'ChIJcwFTuZ062jARH5ORnPe1h3Y',type:'Saturday Walking Street',day:'Dec 26 evening (Saturday)',rating:'4.5★ (8,219)',lat:18.7882,lng:99.0032,mapsUrl:'https://maps.google.com/?q=Tha+Phae+Walking+Street+Chiang+Mai',bookUrl:null,desc:'Chiang Mai\'s best market — Wualai Road closed to traffic every Saturday from 16:00. Silverwork, handmade crafts, street food, performers, monks. More authentic than the Night Bazaar. Dec 27 is Saturday — time your Chiang Rai day trip to be back by 16:00.'},
+      {name:'Wat Rong Khun — White Temple',placeId:'ChIJD5RZzt-31zARo7esjg3V_Co',type:'Day Trip to Chiang Rai (~3 hrs)',day:'Dec 26 — 10:30',rating:'4.6★ (24,856)',lat:19.8233,lng:99.7627,mapsUrl:'https://maps.google.com/?cid=15804765427839541188',bookUrl:'https://www.viator.com/en-US/tours/Chiang-Mai/Chiang-Rai-and-Golden-Triangle-Day-Trip-from-Chiang-Mai/d5422-6116P11',desc:'Wat Rong Khun — entirely white + mirrored glass exterior. Unlike any temple in Asia. Surreal contemporary Buddhist art. Guided day tour also covers Black House + Blue Temple + Golden Triangle. ~$35–45/person via Viator.'},
       {name:'Baan Dam — Black House (Chiang Rai)',placeId:'ChIJAQAAAFAA1zARlrvp9yTMeoE',type:'Day Trip to Chiang Rai',day:'Dec 26 — 12:30',rating:'4.1★ (13,631)',lat:19.9920,lng:99.8608,mapsUrl:'https://maps.google.com/?cid=8823040820578475009',bookUrl:null,desc:'40+ dark wooden buildings by Thai National Artist Thawan Duchanee. Skulls, animal hides, bones — dark arts complex that is the eerie counterpoint to the White Temple. The contrast between the two makes the day.'},
-      {name:'Golden Triangle + Blue Temple',placeId:'ChIJMQ7WcjVD1jART37Y-tgYjmg',type:'Day Trip to Chiang Rai',day:'Dec 26 — 14:30',rating:'4.3★ (16,634)',lat:20.3529,lng:100.0830,mapsUrl:'https://maps.google.com/?q=Golden+Triangle+Chiang+Rai',bookUrl:null,desc:'Where Thailand, Laos, and Myanmar meet at the Mekong River. Historic opium trade crossroads. Boat tours available. Blue Temple (Rong Suea Ten) — electric blue and gold interior — is en route back to Chiang Mai. Mae Kachan Hot Spring also on this route (~200 THB soak).'},
+      {name:'Golden Triangle',placeId:'ChIJMQ7WcjVD1jART37Y-tgYjmg',type:'Day Trip to Chiang Rai',day:'Dec 26 — 14:30',rating:'4.3★ (16,634)',lat:20.3529,lng:100.0830,mapsUrl:'https://maps.google.com/?q=Golden+Triangle+Chiang+Rai',bookUrl:null,desc:'Where Thailand, Laos, and Myanmar meet at the Mekong River. Historic opium trade crossroads. Boat tours available. Stupa and viewpoint overlook the confluence. En route — stop at Rong Suea Ten Blue Temple.'},
+      {name:'Wat Rong Suea Ten — Blue Temple',placeId:'ChIJnS3K0_-f1zAR8bClbehU6rU',type:'Day Trip to Chiang Rai',day:'Dec 26 — en route back',rating:'4.6★ (11,203)',lat:19.9032,lng:99.8320,mapsUrl:'https://maps.google.com/?q=Wat+Rong+Suea+Ten+Chiang+Rai',bookUrl:null,desc:'Astonishing electric-blue and gold interior — the most photogenic room in Thailand. Free entry. 30 min from central Chiang Rai, en route back to Chiang Mai. Do not miss this on the Chiang Rai day trip.'},
+      {name:'Mae Kachan Hot Spring',placeId:'ChIJlxSWBdJB1zARrMLy7v-3U6Y',type:'Hot Spring',day:'Dec 26 — en route Chiang Rai',rating:'4.0★ (3,842)',lat:20.0740,lng:99.8270,mapsUrl:'https://maps.google.com/?q=Mae+Kachan+Hot+Spring+Chiang+Rai',bookUrl:null,desc:'Natural hot spring park en route between Chiang Mai and Chiang Rai (~30 min from Chiang Rai city). Geyser + foot soak pools. ~200 THB. Quick stop — 45 min. Great for tired legs mid-day-trip. Roadside eggs boiled in the geyser.'},
+      {name:'Hinoki Land',placeId:'ChIJmYjpxZ-v2jARRvLGXcyMEPU',type:'Japanese-themed Gardens',day:'Dec 26 or separate day trip',rating:'4.3★ (4,507)',lat:18.9350,lng:98.8790,mapsUrl:'https://maps.google.com/?q=Hinoki+Land+Chiang+Mai',bookUrl:'https://hinokithailand.com',desc:'Japanese hinoki cypress resort and gardens 45 min south of Chiang Mai in Chom Thong. Pagodas, bamboo paths, log cabins, Japanese garden installations. Entry ~350 THB. Unique contrast to Thai temples — dreamy for photos.'},
+      {name:'Wat Huay Pla Kang — Giant Buddha',placeId:'ChIJHw5ooTCg1zARLwb5J5zLhPQ',type:'Day Trip to Chiang Rai',day:'Dec 26 — mid-morning',rating:'4.6★ (14,882)',lat:19.9630,lng:99.8320,mapsUrl:'https://maps.google.com/?q=Wat+Huay+Pla+Kang+Chiang+Rai',bookUrl:null,desc:'Massive 69m white Guan Yin goddess statue with an interior elevator to a panoramic viewing platform at her crown. Free entry. 5km from Chiang Rai city — combine with the White Temple on the Chiang Rai day trip.'},
     ]
   },
   {
@@ -344,26 +439,29 @@ const STOPS = [
     color:'#185FA5', bg:'rgba(24,95,165,0.15)', tc:'#7B9CD4',
     lat:1.3521, lng:103.8198, zoom:13,
     tags:[['NYE Fireworks','#185FA5','rgba(24,95,165,0.2)'],['Gardens','#0F8F6A','rgba(15,143,106,0.2)'],['Hawker Food','#BA7517','rgba(186,117,23,0.2)'],['Nightlife','#7B68C8','rgba(123,104,200,0.2)']],
-    transport:'✈ CNX → SIN via BKK. Arrive Changi evening Dec 29. MRT to city ~30 min (S$2.50) or Grab (~S$25). ✈ <b>DEPART JAN 1 EVENING (~22:00)</b> → Seoul or Tokyo → ORD/JFK → CLE. Arrive Cleveland Jan 2 afternoon. Full Jan 3 as rest day.',
+    transport:'✈ CNX → SIN via BKK. Arrive Changi evening Dec 29. MRT to city ~30 min (S$2.50) or Grab (~S$25). ✈ <b>DEPART JAN 1 EVENING (~22:00)</b> → Seoul or Tokyo → ORD/JFK → CLE. Arrive Cleveland Jan 2 afternoon.',
     mapsUrl:'https://maps.google.com/?q=Singapore',
     walkPath:[
-      {lat:1.2816,lng:103.8636}, // Gardens by the Bay
-      {lat:1.2820,lng:103.8639}, // Supertrees
-      {lat:1.2838,lng:103.8591}, // MBS
-      {lat:1.2863,lng:103.8545}, // Marina Bay promenade
+      {lat:1.2816,lng:103.8636},
+      {lat:1.2820,lng:103.8639},
+      {lat:1.2838,lng:103.8591},
+      {lat:1.2863,lng:103.8545},
     ],
     walkLabel:'Marina Bay Walk: Gardens by the Bay → Supertrees → Marina Bay Sands → Promenade',
     attrs:[
-      {name:'Cloud Forest',placeId:'ChIJd0VihwEZ2jERKeREhO6G1Qg',type:'Indoor Botanical Garden',day:'Dec 30 — 09:00',rating:'4.8★ (31,211)',lat:1.2839,lng:103.8660,mapsUrl:'https://maps.google.com/?cid=10547399484434046505',bookUrl:'https://www.gardensbythebay.com.sg',desc:'Singapore\'s #1 rated indoor attraction (4.8★). 35m indoor mountain with dramatic waterfall, cool misty air, lush cloud forest plants layered up the mountain. Walk the skywalk. Combo ticket with Flower Dome ~S$28. Book online.'},
-      {name:'Flower Dome',placeId:'ChIJMxZ-kwQZ2jERdsqftXeWCWI',type:'World\'s Largest Glass Greenhouse',day:'Dec 30 — 09:00',rating:'4.7★ (157,339)',lat:1.2816,lng:103.8636,mapsUrl:'https://maps.google.com/?cid=7064521892555603978',bookUrl:'https://www.gardensbythebay.com.sg/en/visit-us/plan-your-visit/admission-charges.html',desc:'World\'s largest glass greenhouse. Mediterranean and semi-arid flora from five continents. Cool, dry interior — great escape from Singapore humidity. Combo ticket with Cloud Forest. Free Supertree Grove light show 7:45pm + 8:45pm nightly.'},
+      {name:'Cloud Forest',placeId:'ChIJd0VihwEZ2jERKeREhO6G1Qg',type:'Indoor Botanical Garden',day:'Dec 30 — 09:00',rating:'4.8★ (31,211)',lat:1.2839,lng:103.8660,mapsUrl:'https://maps.google.com/?cid=10547399484434046505',bookUrl:'https://www.gardensbythebay.com.sg',desc:'Singapore\'s #1 rated indoor attraction. 35m indoor mountain with dramatic waterfall, cool misty air, lush cloud forest plants layered up the mountain. Walk the skywalk. Combo ticket with Flower Dome ~S$28. Book online.'},
+      {name:'Flower Dome',placeId:'ChIJMxZ-kwQZ2jERdsqftXeWCWI',type:'World\'s Largest Glass Greenhouse',day:'Dec 30 — 09:00',rating:'4.7★ (157,339)',lat:1.2816,lng:103.8636,mapsUrl:'https://maps.google.com/?cid=7064521892555603978',bookUrl:'https://www.gardensbythebay.com.sg/en/visit-us/plan-your-visit/admission-charges.html',desc:'World\'s largest glass greenhouse. Mediterranean and semi-arid flora from five continents. Cool, dry interior — great escape from Singapore humidity. Combo ticket with Cloud Forest. Free Supertree light show 7:45pm + 8:45pm nightly.'},
       {name:'Supertree Grove',placeId:'ChIJT4lHCgMZ2jERloDE6WmkdMk',type:'Free Evening Landmark',day:'Dec 30 — 19:45',rating:'4.7★ (53,658)',lat:1.2820,lng:103.8639,mapsUrl:'https://maps.google.com/?cid=12538600155710538507',bookUrl:null,desc:'18 vertical garden towers up to 50m tall. Free Garden Rhapsody light + music show at 7:45pm and 8:45pm nightly. OCBC Skyway bridge walk between supertrees (~S$10). Walk here after dinner at Satay by the Bay.'},
-      {name:'Marina Bay Sands',placeId:'ChIJA5LATO4Z2jER111V-v6abAI',type:'Hotel + SkyPark Observation Deck',day:'Dec 30 + NYE Dec 31',rating:'4.7★ (63,503)',lat:1.2838,lng:103.8591,mapsUrl:'https://maps.google.com/?cid=9222890547424960006',bookUrl:'https://www.marinabaysands.com/sands-skypark.html',desc:'Iconic 57-floor SkyPark observation deck (S$32 — book online). NYE fireworks viewing. Book CÉ LA VI or Lavo rooftop bar for NYE dinner NOW — sells out 3–6 months ahead. Free waterfront promenade walk along Marina Bay.'},
-      {name:'NYE Fireworks — Marina Bay',placeId:'ChIJA5LATO4Z2jER111V-v6abAI',type:'⭐ New Year\'s Eve Dec 31 — Midnight',day:'Dec 31 — midnight',rating:'One of Asia\'s best NYE events',lat:1.2863,lng:103.8545,mapsUrl:'https://maps.google.com/?q=Marina+Bay+Singapore+New+Year',bookUrl:'https://www.celavi.com/en/singapore/',desc:'Midnight fireworks over Marina Bay Sands. Book rooftop NOW — CÉ LA VI (MBS), Lavo (MBS), or 1-Altitude (63rd floor). NYE rooftop spots sell out 3–6 months ahead. Free option: Marina Bay Promenade waterfront — arrive by 21:00 for a good spot.'},
-      {name:'Sentosa Island',placeId:'ChIJRYMSeKwe2jERAR2QXVU39vg',type:'Beach + Theme Park Island',day:'Dec 31 daytime',rating:'4.7★ (9,570)',lat:1.2494,lng:103.8303,mapsUrl:'https://maps.google.com/?q=Sentosa+Island+Singapore',bookUrl:'https://www.rwsentosa.com/en/attractions/universal-studios-singapore',desc:'Universal Studios Singapore (~S$88), Siloso Beach (free), cable car, S.E.A. Aquarium. Full day before NYE. MRT to HarbourFront then cable car or monorail to island. Leave by 17:00 to get ready for NYE.'},
-      {name:'Maxwell Food Centre',placeId:'ChIJseQsTQ0Z2jERqpBTWF0Zf84',type:'Hawker Centre',day:'Dec 30–31 lunch',rating:'4.4★ (23,163)',lat:1.2803,lng:103.8448,mapsUrl:'https://maps.google.com/?cid=11034617720521948593',bookUrl:null,desc:'Singapore\'s best hawker centre. Tian Tian Hainanese Chicken Rice always has a queue — worth every minute. S$4–8/meal. Open most days. Authentic Singapore food culture. Perfect cheap lunch before pricier Singapore evenings.'},
-      {name:'Lau Pa Sat Hawker Centre',placeId:'ChIJ81NMnQ4Z2jERbWsylh_NPKE',type:'Hawker Centre + Satay Street',day:'Dec 29 arrival night / any evening',rating:'4.3★',lat:1.2803,lng:103.8509,mapsUrl:'https://maps.google.com/?q=Lau+Pa+Sat+Singapore',bookUrl:null,desc:'Victorian iron structure landmark — Satay Street outside becomes one of Singapore\'s best evening food experiences. Open late. Perfect for arrival night dinner after flying in from Chiang Mai.'},
+      {name:'Marina Bay Sands',placeId:'ChIJA5LATO4Z2jER111V-v6abAI',type:'Hotel + SkyPark Observation Deck',day:'Dec 30 + NYE Dec 31',rating:'4.7★ (63,503)',lat:1.2838,lng:103.8591,mapsUrl:'https://maps.google.com/?cid=9222890547424960006',bookUrl:'https://www.marinabaysands.com/sands-skypark.html',desc:'Iconic 57-floor SkyPark observation deck (S$32 — book online). NYE fireworks viewing. Book CÉ LA VI or Lavo rooftop bar for NYE dinner NOW — sells out 3–6 months ahead.'},
+      {name:'NYE Fireworks — Marina Bay',placeId:'ChIJA5LATO4Z2jER111V-v6abAI',type:'⭐ New Year\'s Eve Dec 31 — Midnight',day:'Dec 31 — midnight',rating:'One of Asia\'s best NYE',lat:1.2863,lng:103.8545,mapsUrl:'https://maps.google.com/?q=Marina+Bay+Singapore+New+Year',bookUrl:'https://www.celavi.com/en/singapore/',desc:'Midnight fireworks over Marina Bay Sands. Book rooftop NOW — CÉ LA VI (MBS), Lavo (MBS), or 1-Altitude (63rd floor). NYE rooftop spots sell out 3–6 months ahead. Free option: Marina Bay Promenade waterfront — arrive by 21:00 for a good spot.'},
+      {name:'Sentosa Island',placeId:'ChIJRYMSeKwe2jERAR2QXVU39vg',type:'Beach + Theme Park Island',day:'Dec 31 daytime',rating:'4.7★ (9,570)',lat:1.2494,lng:103.8303,mapsUrl:'https://maps.google.com/?q=Sentosa+Island+Singapore',bookUrl:'https://www.rwsentosa.com/en/attractions/universal-studios-singapore',desc:'Universal Studios Singapore (~S$88), Siloso Beach (free), cable car, S.E.A. Aquarium. Full day before NYE. MRT to HarbourFront then cable car or monorail. Leave by 17:00 to get ready for NYE.'},
+      {name:'Maxwell Food Centre',placeId:'ChIJseQsTQ0Z2jERqpBTWF0Zf84',type:'Hawker Centre',day:'Dec 30–31 lunch',rating:'4.4★ (23,163)',lat:1.2803,lng:103.8448,mapsUrl:'https://maps.google.com/?cid=11034617720521948593',bookUrl:null,desc:'Singapore\'s best hawker centre. Tian Tian Hainanese Chicken Rice always has a queue — worth every minute. S$4–8/meal. Authentic Singapore food culture. Perfect cheap lunch before pricier Singapore evenings.'},
+      {name:'Newton Food Centre',placeId:'ChIJoxHcIYoZ2jERByWYpHkIMXI',type:'Hawker Centre',day:'Dec 29–30 evening',rating:'4.2★ (9,847)',lat:1.3119,lng:103.8378,mapsUrl:'https://maps.google.com/?q=Newton+Food+Centre+Singapore',bookUrl:null,desc:'Classic open-air hawker centre from Crazy Rich Asians. BBQ satay, chilli crab, oyster omelette. Good arrival-night option — lively, open late, easy Grab from most hotels. Prices slightly tourist-facing but the food is solid.'},
+      {name:'Lau Pa Sat Hawker Centre',placeId:'ChIJ81NMnQ4Z2jERbWsylh_NPKE',type:'Hawker Centre + Satay Street',day:'Dec 29 arrival night / any evening',rating:'4.3★',lat:1.2803,lng:103.8509,mapsUrl:'https://maps.google.com/?q=Lau+Pa+Sat+Singapore',bookUrl:null,desc:'Victorian iron structure landmark — Satay Street outside becomes one of Singapore\'s best evening food experiences. Open late. Perfect for arrival-night dinner after flying in from Chiang Mai.'},
+      {name:'Little India',placeId:'ChIJm7uBlwMZ2jERBVmXNPKJMxM',type:'Cultural Neighbourhood',day:'Dec 30 or Jan 1',rating:'4.5★',lat:1.3066,lng:103.8518,mapsUrl:'https://maps.google.com/?q=Little+India+Singapore',bookUrl:null,desc:'Vibrant cultural district around Serangoon Road and Tekka Centre. Incense, marigold garlands, Tamil food, colourful temples (Sri Veeramakaliamman), and incredible cheap food at Tekka Market. 30-min contrast to Marina Bay\'s gloss.'},
+      {name:'Chinatown Singapore',placeId:'ChIJwX2YLg0Z2jERSWOv4A9e2YI',type:'Cultural Neighbourhood',day:'Dec 29 or 30',rating:'4.4★',lat:1.2832,lng:103.8443,mapsUrl:'https://maps.google.com/?q=Chinatown+Singapore',bookUrl:null,desc:'Pagoda Street, Trengganu Street, Buddha Tooth Relic Temple, Smith Street food stalls. Excellent for a morning stroll after Maxwell Food Centre. Heritage shophouses converted into bars and restaurants. The Chinatown Complex wet market is worth seeing early.'},
       {name:'Clarke Quay',placeId:'ChIJN2uJhf8Z2jERrC_nMdlbYKE',type:'Riverside Bar + Nightlife District',day:'Dec 29–Jan 1 evenings',rating:'4.4★',lat:1.2900,lng:103.8449,mapsUrl:'https://maps.google.com/?q=Clarke+Quay+Singapore',bookUrl:null,desc:'Singapore\'s main bar and nightlife strip along the Singapore River. Dozens of bars, clubs, live music. Colourful shophouses converted into venues. Take Grab from most areas. Good for arrival night and Jan 1 (New Year\'s Day) evenings.'},
-      {name:'Singapore Zoo',placeId:'ChIJr9wqENkT2jERkRs7pMj6FLQ',type:'Open-concept Zoo (Optional)',day:'Jan 1 afternoon',rating:'4.6★ (51,640)',lat:1.4043,lng:103.7930,mapsUrl:'https://maps.google.com/?cid=3476636399183065900',bookUrl:'https://www.mandai.com/en/singapore-zoo.html',desc:'World-class open-concept zoo — no cages, animals in natural habitats. Go 8:30am for coolest temps and most active animals. ~S$46. Allow 3–4 hrs. Book online. Optional if energy allows after NYE.'},
+      {name:'Singapore Zoo',placeId:'ChIJr9wqENkT2jERkRs7pMj6FLQ',type:'Open-concept Zoo (Optional)',day:'Jan 1 afternoon',rating:'4.6★ (51,640)',lat:1.4043,lng:103.7930,mapsUrl:'https://maps.google.com/?cid=3476636399183065900',bookUrl:'https://www.mandai.com/en/singapore-zoo.html',desc:'World-class open-concept zoo — no cages, animals in natural habitats. Go 8:30am for coolest temps. ~S$46. Allow 3–4 hrs. Book online. Optional if energy allows after NYE.'},
       {name:'Changi Airport Jewel',placeId:'ChIJpSKZgNMX2jERipbm2p5NLEU',type:'Airport Attraction — Jan 1 departure',day:'Jan 1 — pre-departure',rating:'4.8★',lat:1.3601,lng:103.9890,mapsUrl:'https://maps.google.com/?q=Jewel+Changi+Airport+Singapore',bookUrl:null,desc:'World\'s tallest indoor waterfall (40m Rain Vortex), shopping, dining — accessible from all terminals. Arrive at Changi 2.5+ hrs before Jan 1 departure and walk through Jewel. Completely free to enter from airport terminals.'},
     ]
   }
@@ -383,7 +481,6 @@ function initMap() {
     mapTypeControl:false, streetViewControl:false, fullscreenControl:true,
     zoomControlOptions:{position:google.maps.ControlPosition.RIGHT_BOTTOM},
     styles:[
-      // Clean, dark-tinted map — NO highlighted roads, no POI clutter
       {featureType:'all',elementType:'geometry',stylers:[{color:'#1a1916'}]},
       {featureType:'water',elementType:'geometry',stylers:[{color:'#0d2b3e'}]},
       {featureType:'water',elementType:'labels.text.fill',stylers:[{color:'#526e7e'}]},
@@ -408,13 +505,38 @@ function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer({
     suppressMarkers:true,
-    polylineOptions:{
-      strokeColor:'#7B68C8',
-      strokeWeight:4,
-      strokeOpacity:0.85,
-    }
+    polylineOptions:{strokeColor:'#7B68C8',strokeWeight:4,strokeOpacity:0.85}
   });
   directionsRenderer.setMap(map);
+
+  // Touch swipe for info window carousel
+  let pendingIWId = null;
+  const origSetContent = infoWindow.setContent.bind(infoWindow);
+  infoWindow.setContent = function(content) {
+    origSetContent(content);
+  };
+  google.maps.event.addListener(infoWindow, 'domready', () => {
+    if (!pendingIWId) return;
+    const id = pendingIWId;
+    const trk = document.getElementById('trk_' + id);
+    if (!trk || trk.children.length <= 1) return;
+    const total = trk.children.length;
+    let startX = 0, startY = 0;
+    trk.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, {passive:true});
+    trk.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        iwStep(id, dx < 0 ? 1 : -1, total);
+      }
+    }, {passive:true});
+  });
+
+  // Store pendingIWId before each setContent call via buildIWFull
+  window._setPendingIWId = (id) => { pendingIWId = id; };
 
   buildUI();
   drawRoutePaths();
@@ -422,8 +544,7 @@ function initMap() {
 }
 
 // ═══════════════════════════════════════
-// ROUTE PATHS — flight arcs + van paths
-// (NO blue road overlay — just route arcs between stops)
+// ROUTE PATHS
 // ═══════════════════════════════════════
 function drawRoutePaths() {
   const segs = [
@@ -446,7 +567,7 @@ function drawRoutePaths() {
       }] : []
     });
   });
-  // Day trips
+  // Day trip lines
   [{from:{lat:7.9519,lng:98.3381},to:{lat:7.7407,lng:98.7784}},
    {from:{lat:18.7883,lng:98.9853},to:{lat:19.8233,lng:99.7627}}].forEach(d=>{
     new google.maps.Polyline({path:[d.from,d.to],map,strokeColor:'#BA7517',strokeOpacity:0,strokeWeight:1.5,
@@ -456,7 +577,6 @@ function drawRoutePaths() {
 
 // ═══════════════════════════════════════
 // WALKING DIRECTIONS
-// Uses Google Maps Directions API for actual street-level walking routes
 // ═══════════════════════════════════════
 let currentDirRoute = null;
 
@@ -505,7 +625,7 @@ function mkStopSvg(s, sel) {
 }
 
 function drawStops() {
-  STOPS.forEach((s,i)=>{
+  STOPS.forEach((s)=>{
     const m=new google.maps.Marker({position:{lat:s.lat,lng:s.lng},map,icon:mkStopSvg(s,false),title:s.name,zIndex:100});
     m.addListener('click',()=>selectStop(s.id));
     stopMarkers.push(m);
@@ -540,17 +660,21 @@ function clearAttrMarkers(){attrMarkers.forEach(m=>m.setMap(null));attrMarkers=[
 
 // ═══════════════════════════════════════
 // INFO WINDOW — PHOTO CAROUSEL
-// Fetches real photos via Places API
 // ═══════════════════════════════════════
 const photoCache={};
 
 function openIW(marker, attr, stop) {
-  // Loading state
   infoWindow.setContent(buildIWLoading(attr));
   infoWindow.open(map,marker);
 
-  if (photoCache[attr.placeId]) {
+  if (photoCache[attr.placeId] !== undefined) {
     buildIWFull(attr, stop, marker, photoCache[attr.placeId]);
+    return;
+  }
+  // Don't bother calling Places API for placeholder IDs
+  if (attr.placeId.startsWith('NOID_')) {
+    photoCache[attr.placeId] = [];
+    buildIWFull(attr, stop, marker, []);
     return;
   }
   placesService.getDetails({placeId:attr.placeId, fields:['photos']}, (r,s)=>{
@@ -564,7 +688,7 @@ function openIW(marker, attr, stop) {
 }
 
 function buildIWLoading(attr) {
-  return `<div class="iw"><div style="width:280px;height:165px;background:#111;display:flex;align-items:center;justify-content:center"><span style="color:rgba(255,255,255,0.2);font-size:11px;font-family:DM Sans,sans-serif">Loading photos…</span></div><div class="iw-body"><div class="iw-name">${attr.name}</div><div class="iw-day">${attr.day}</div></div></div>`;
+  return `<div class="iw"><div style="width:280px;height:165px;background:#111;display:flex;align-items:center;justify-content:center"><span style="color:rgba(255,255,255,0.2);font-size:11px;font-family:DM Sans,sans-serif">Loading…</span></div><div class="iw-body"><div class="iw-name">${attr.name}</div><div class="iw-day">${attr.day}</div></div></div>`;
 }
 
 function buildIWFull(attr, stop, marker, urls) {
@@ -573,15 +697,14 @@ function buildIWFull(attr, stop, marker, urls) {
 
   const slides = total>0
     ? urls.map((u,i)=>`<div class="iw-slide"><img class="iw-img" src="${u}" alt="${attr.name} photo ${i+1}" loading="lazy"></div>`).join('')
-    : `<div class="iw-slide"><div class="iw-img-placeholder">${attr.name}</div></div>`;
+    : `<div class="iw-slide"><div class="iw-img-placeholder" style="background:${stop.color}22"><span style="font-size:36px">${getAttrEmoji(attr.name)}</span><span style="font-size:11px;color:rgba(255,255,255,0.65);text-align:center;padding:0 16px;line-height:1.4;font-family:'DM Sans',sans-serif">${attr.name}</span><span style="font-size:9px;color:rgba(255,255,255,0.3);text-align:center;padding:0 12px;font-family:'DM Sans',sans-serif">${attr.type}</span></div></div>`;
 
   const dots = total>1 ? urls.map((_,i)=>`<div class="iw-dot${i===0?' on':''}" onclick="iwGoTo('${id}',${i})"></div>`).join('') : '';
   const counter = total>1 ? `<div class="iw-counter" id="ctr_${id}">1 / ${total}</div>` : '';
   const arrows = total>1 ? `
-    <button class="iw-arrow iw-prev" onclick="iwStep('${id}',-1,${total})">‹</button>
-    <button class="iw-arrow iw-next" onclick="iwStep('${id}',1,${total})">›</button>` : '';
+    <button class="iw-arrow iw-prev" onclick="iwStep('${id}',-1,${total})">&#8249;</button>
+    <button class="iw-arrow iw-next" onclick="iwStep('${id}',1,${total})">&#8250;</button>` : '';
   const dotsHtml = dots ? `<div class="iw-dots" id="dots_${id}">${dots}</div>` : '';
-
   const bkBtn = attr.bookUrl ? `<a href="${attr.bookUrl}" target="_blank" class="iw-btn iw-bk">🎟 Book / Info</a>` : '';
 
   const html=`<div class="iw">
@@ -601,6 +724,8 @@ function buildIWFull(attr, stop, marker, urls) {
       </div>
     </div>
   </div>`;
+
+  window._setPendingIWId(id);
   infoWindow.setContent(html);
   infoWindow.open(map,marker);
 }
@@ -622,14 +747,39 @@ window.iwGoTo=function(id,idx){
   if(dotsCont){dotsCont.querySelectorAll('.iw-dot').forEach((d,i)=>d.classList.toggle('on',i===idx));}
 };
 
-// Fetch thumbnail for side panel card
+// ── THUMBNAIL FETCH WITH FALLBACK ──
 const thumbCache={};
-function fetchThumb(placeId,imgEl){
-  if(thumbCache[placeId]){imgEl.src=thumbCache[placeId];return;}
-  placesService.getDetails({placeId,fields:['photos']},(r,s)=>{
+
+function setThumbFallback(imgEl, color, name) {
+  imgEl.style.display = 'none';
+  const wrap = imgEl.parentElement;
+  wrap.style.background = color + '22';
+  const fb = wrap.querySelector('.ac-fb');
+  if (fb) fb.style.display = 'flex';
+}
+
+function fetchThumb(placeId, imgEl, color, name) {
+  if (thumbCache[placeId] !== undefined) {
+    if (thumbCache[placeId] === '') {
+      setThumbFallback(imgEl, color, name);
+    } else {
+      imgEl.src = thumbCache[placeId];
+    }
+    return;
+  }
+  if (placeId.startsWith('NOID_')) {
+    thumbCache[placeId] = '';
+    setThumbFallback(imgEl, color, name);
+    return;
+  }
+  placesService.getDetails({placeId, fields:['photos']},(r,s)=>{
     if(s===google.maps.places.PlacesServiceStatus.OK&&r?.photos?.length){
       const u=r.photos[0].getUrl({maxWidth:128,maxHeight:104});
-      thumbCache[placeId]=u; imgEl.src=u;
+      thumbCache[placeId]=u;
+      imgEl.src=u;
+    } else {
+      thumbCache[placeId]='';
+      setThumbFallback(imgEl, color, name);
     }
   });
 }
@@ -724,7 +874,13 @@ function renderSide(stop){
       ${stop.attrs.map((a,i)=>`
         <div class="acard" id="ac${i}" onclick="selectAttr(${i})">
           <div class="ac-num" style="background:${stop.color}">${i+1}</div>
-          <div class="ac-thumb-wrap"><img class="ac-thumb" id="th${i}" alt="${a.name}"></div>
+          <div class="ac-thumb-wrap">
+            <img class="ac-thumb" id="th${i}" alt="${a.name}">
+            <div class="ac-fb">
+              <span class="ac-fb-emoji">${getAttrEmoji(a.name)}</span>
+              <span class="ac-fb-name">${a.name}</span>
+            </div>
+          </div>
           <div class="ac-info">
             <div class="ac-name">${a.name}</div>
             <div class="ac-type">${a.type}</div>
@@ -738,9 +894,17 @@ function renderSide(stop){
         </div>`).join('')}
     </div>`;
 
+  // Mobile: allow full-page scroll for side panel
+  if (window.innerWidth <= 768) {
+    sm.style.overflow = 'visible';
+    sm.style.flex = 'none';
+    const as = sm.querySelector('.attr-scroll');
+    if (as) { as.style.overflow = 'visible'; as.style.flex = 'none'; }
+  }
+
   stop.attrs.forEach((a,i)=>{
     const img=document.getElementById('th'+i);
-    if(img)fetchThumb(a.placeId,img);
+    if(img) fetchThumb(a.placeId, img, stop.color, a.name);
   });
 }
 
